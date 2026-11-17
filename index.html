@@ -4,751 +4,1257 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#050b1b">
-<title>Welcome to Your Universe</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#050b18">
+<title>Welcome — A Little Universe</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
 :root {
-  --bg: #050b1b;
-  --blue: #63b9ff;
-  --ice: #c7e8ff;
-  --muted: #91a9c9;
-  --panel: rgba(15, 35, 69, .55);
+  --bg:#050b18;
+  --blue:#63aaff;
+  --light:#d9edff;
+  --muted:#91aaca;
+  --panel:rgba(12,28,53,.72);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
 
 body {
-  background: var(--bg);
-  color: white;
-  font-family: 'DM Sans', sans-serif;
-  overflow-x: hidden;
-  min-height: 100vh;
+  background:var(--bg);
+  color:white;
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
 }
 
-button { font: inherit; cursor: pointer; }
+button { font:inherit; cursor:pointer; }
+button:focus-visible,a:focus-visible {
+  outline:2px solid #9bd0ff;
+  outline-offset:4px;
+}
 
-#sky {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -3;
+/* BACKGROUND SKY */
+
+#stars {
+  position:fixed;
+  inset:0;
+  z-index:-5;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+}
+
+.sky {
+  position:fixed;
+  inset:-10%;
+  z-index:-4;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 15% 20%,#12376a55,transparent 35%),
+    radial-gradient(ellipse at 85% 65%,#164b8850,transparent 35%),
+    radial-gradient(ellipse at 50% 100%,#10294d55,transparent 50%);
 }
 
 .sky-glow {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at 20% 20%, rgba(21, 89, 170, .2), transparent 45%),
-    radial-gradient(ellipse at 80% 70%, rgba(28, 72, 145, .16), transparent 50%);
+  position:fixed;
+  width:700px;
+  height:700px;
+  border-radius:50%;
+  z-index:-3;
+  pointer-events:none;
+  background:#2368bb18;
+  filter:blur(100px);
+  left:50%;
+  top:35%;
+  transform:translate(-50%,-50%);
 }
+
+#particles {
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+  overflow:hidden;
+}
+
+.particle {
+  position:absolute;
+  border-radius:50%;
+  background:#a8d5ff;
+  opacity:.5;
+  box-shadow:0 0 12px #70baff;
+  animation:drift linear infinite;
+}
+
+@keyframes drift {
+  from { transform:translateY(20px); opacity:0; }
+  20% { opacity:.6; }
+  to { transform:translateY(-110vh); opacity:0; }
+}
+
+/* BIRTHDAY ATMOSPHERE */
 
 body.birthday-mode .sky-glow {
-  background:
-    radial-gradient(ellipse at 50% 40%, rgba(39, 133, 255, .35), transparent 65%),
-    radial-gradient(ellipse at 20% 80%, rgba(90, 170, 255, .16), transparent 55%);
-  animation: skyGlow 4s ease-in-out infinite alternate;
+  background:#398fff35;
+  animation:birthdayGlow 4s ease-in-out infinite alternate;
 }
 
-@keyframes skyGlow {
-  from { opacity: .55; }
-  to { opacity: 1; }
+body.birthday-mode .sky {
+  background:
+    radial-gradient(ellipse at 50% 35%,#2468b855,transparent 48%),
+    radial-gradient(ellipse at 15% 80%,#164b8850,transparent 40%),
+    radial-gradient(ellipse at 85% 65%,#164b8850,transparent 40%);
+}
+
+@keyframes birthdayGlow {
+  from { opacity:.45; }
+  to { opacity:1; }
 }
 
 /* INTRO */
 
 .intro {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: grid;
-  place-items: center;
-  text-align: center;
-  background: #030817;
-  transition: opacity 1s, visibility 1s;
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:grid;
+  place-items:center;
+  background:radial-gradient(ellipse at center,#102d59,#050b18 70%);
+  transition:opacity 1s,visibility 1s;
 }
 
 .intro.hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
 }
 
-.intro-content { padding: 25px; }
+.intro-content {
+  text-align:center;
+  padding:25px;
+  animation:rise 1.2s ease both;
+}
 
-.intro-star {
-  font-size: 45px;
-  color: var(--blue);
-  display: block;
-  margin-bottom: 22px;
-  text-shadow: 0 0 35px var(--blue);
-  animation: pulse 3s infinite;
+@keyframes rise {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.intro-kicker {
+  color:#8fc5ff;
+  letter-spacing:.35em;
+  font-size:.65rem;
+  margin-bottom:22px;
 }
 
 .intro h1 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(55px, 10vw, 100px);
-  font-weight: 400;
-  letter-spacing: 12px;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(5rem,16vw,10rem);
+  letter-spacing:-.07em;
+  font-weight:500;
+  text-shadow:0 0 50px #69b4ff55;
 }
+
+.intro h1 span { color:var(--blue); }
 
 .intro p {
-  color: var(--muted);
-  letter-spacing: 4px;
-  font-size: 11px;
-  margin: 15px 0 35px;
+  color:#b2c9e7;
+  margin:20px 0 35px;
 }
 
-.enter-btn {
-  border: 1px solid rgba(133, 196, 255, .5);
-  color: white;
-  background: rgba(38, 113, 202, .12);
-  border-radius: 50px;
-  padding: 15px 35px;
-  letter-spacing: 3px;
-  font-size: 11px;
-  transition: .3s;
+.intro-foot {
+  position:absolute;
+  bottom:28px;
+  color:#6e8bab;
+  letter-spacing:.2em;
+  font-size:.58rem;
 }
 
-.enter-btn:hover {
-  background: rgba(65, 151, 255, .3);
-  box-shadow: 0 0 35px rgba(69, 159, 255, .3);
-  transform: translateY(-3px);
+.primary-btn {
+  border:1px solid #8bc5ff77;
+  background:#397fc42b;
+  color:white;
+  border-radius:99px;
+  padding:15px 26px;
+  letter-spacing:.15em;
+  font-size:.7rem;
+  cursor:pointer;
+  transition:.3s;
 }
 
-@keyframes pulse {
-  50% { transform: scale(1.2); opacity: .7; }
+.primary-btn:hover {
+  background:#397fc466;
+  transform:translateY(-3px);
 }
 
 /* NAVIGATION */
 
 nav {
-  width: min(1150px, 92%);
-  margin: auto;
-  height: 85px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(150, 195, 255, .12);
+  width:min(1150px,92%);
+  margin:auto;
+  padding:25px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:relative;
+  z-index:10;
 }
 
 .brand {
-  letter-spacing: 5px;
-  font-size: 12px;
-  color: var(--ice);
+  color:#cfe7ff;
+  letter-spacing:.18em;
+  font-size:.8rem;
+  font-weight:700;
 }
 
 .nav-links {
-  display: flex;
-  gap: 25px;
+  display:flex;
+  gap:27px;
+  list-style:none;
 }
 
 .nav-links a {
-  color: #a9bad2;
-  text-decoration: none;
-  font-size: 12px;
-  transition: .3s;
+  color:#9eb6d5;
+  text-decoration:none;
+  font-size:.78rem;
+  transition:.2s;
 }
 
-.nav-links a:hover { color: white; }
+.nav-links a:hover { color:white; }
 
-@media(max-width:600px) {
-  nav { height: auto; padding: 20px 0; gap: 15px; flex-direction: column; }
-  .nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
+.menu-btn {
+  display:none;
+  border:0;
+  background:none;
+  color:white;
+  font-size:1.5rem;
+  cursor:pointer;
 }
 
 /* HERO */
 
 .hero {
-  min-height: 650px;
-  padding: 110px 20px 90px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  position: relative;
+  min-height:83vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:50px 20px 100px;
+  position:relative;
 }
 
+.hero-orbit {
+  position:absolute;
+  width:310px;
+  height:310px;
+  border:1px solid #8bc5ff20;
+  border-radius:50%;
+  animation:orbit 35s linear infinite;
+}
+
+.hero-orbit:before {
+  content:"";
+  position:absolute;
+  width:10px;
+  height:10px;
+  background:#a9d8ff;
+  border-radius:50%;
+  box-shadow:0 0 25px 8px #5daaff88;
+  top:30px;
+  left:45px;
+}
+
+.hero-moon {
+  position:absolute;
+  width:115px;
+  height:115px;
+  border-radius:50%;
+  top:calc(50% - 240px);
+  background:radial-gradient(circle at 32% 30%,#fff,#b7d8fa 30%,#4675a9 75%);
+  box-shadow:0 0 70px #6caeff44;
+  opacity:.8;
+}
+
+@keyframes orbit { to { transform:rotate(360deg); } }
+
 .eyebrow {
-  color: #80bcf4;
-  font-size: 10px;
-  letter-spacing: 6px;
-  text-transform: uppercase;
+  color:#8dbfff;
+  letter-spacing:.3em;
+  font-size:.68rem;
+  margin-bottom:22px;
 }
 
 .hero h1 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(52px, 9vw, 100px);
-  line-height: 1;
-  font-weight: 400;
-  margin: 25px 0;
-  background: linear-gradient(120deg, #fff, #9bceff, #fff);
-  color: transparent;
-  background-clip: text;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(3.4rem,10vw,7.3rem);
+  font-weight:500;
+  letter-spacing:-.055em;
+  line-height:1.05;
+  position:relative;
 }
 
-.hero p {
-  max-width: 480px;
-  line-height: 1.9;
-  color: #9eb3d0;
-  font-size: 14px;
+.hero h1 em {
+  color:#83bcf7;
+  font-style:normal;
 }
 
-.primary-btn {
-  margin-top: 35px;
-  padding: 14px 28px;
-  border-radius: 40px;
-  border: 1px solid rgba(112, 183, 255, .5);
-  color: white;
-  background: rgba(46, 121, 210, .18);
-  transition: .3s;
+.hero-desc {
+  color:#9eb5d2;
+  max-width:510px;
+  line-height:1.8;
+  margin:25px auto 32px;
 }
 
-.primary-btn:hover {
-  background: rgba(46, 121, 210, .4);
-  transform: translateY(-3px);
+.hero-actions {
+  display:flex;
+  gap:13px;
+  flex-wrap:wrap;
+  justify-content:center;
 }
 
-/* SECTIONS */
-
-section {
-  width: min(1050px, 90%);
-  margin: 0 auto;
-  padding: 85px 0;
+.secondary-btn {
+  padding:14px 24px;
+  border:1px solid #6c9dcc55;
+  border-radius:99px;
+  color:#cde5ff;
+  background:#10274655;
+  text-decoration:none;
+  font-size:.75rem;
+  transition:.25s;
 }
 
-.section-heading {
-  text-align: center;
-  margin-bottom: 45px;
+.secondary-btn:hover {
+  background:#1b4777;
+  transform:translateY(-3px);
 }
 
-.section-heading span {
-  color: var(--blue);
-  letter-spacing: 5px;
-  font-size: 10px;
+.scroll-note {
+  position:absolute;
+  bottom:24px;
+  color:#6885a9;
+  font-size:.65rem;
+  letter-spacing:.2em;
 }
 
-.section-heading h2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(38px, 6vw, 58px);
-  font-weight: 400;
-  margin-top: 10px;
+/* SECTION COMMON */
+
+section.content-section {
+  width:min(1100px,90%);
+  margin:100px auto;
 }
 
-.section-heading p {
-  color: var(--muted);
-  font-size: 13px;
-  margin-top: 10px;
+.section-head {
+  text-align:center;
+  margin-bottom:40px;
 }
 
-/* GEMINI CONSTELLATION */
-
-.gemini-card {
-  border: 1px solid rgba(111, 174, 255, .2);
-  border-radius: 25px;
-  padding: 35px 20px;
-  background: linear-gradient(145deg, rgba(12, 34, 68, .78), rgba(5, 14, 33, .72));
-  box-shadow: 0 20px 80px rgba(0, 0, 0, .2);
-  overflow: hidden;
+.section-head small {
+  color:#79b9ff;
+  letter-spacing:.25em;
+  font-size:.65rem;
+  text-transform:uppercase;
 }
 
-.gemini-title {
-  text-align: center;
+.section-head h2 {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.4rem,6vw,4rem);
+  font-weight:500;
+  margin:12px 0;
 }
 
-.gemini-symbol {
-  font-size: 55px;
-  color: #a5d7ff;
-  display: block;
-  text-shadow: 0 0 25px #359dff, 0 0 60px #1479ff;
-  animation: pulse 3s infinite;
+.section-head p {
+  color:#91aaca;
+  line-height:1.7;
 }
 
-.gemini-title h3 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 35px;
-  font-weight: 400;
-  margin-top: 5px;
-}
+/* FEATURE CARDS */
 
-.gemini-title p {
-  color: #8ba8c9;
-  font-size: 10px;
-  letter-spacing: 4px;
-  margin-top: 7px;
-}
-
-.constellation-wrap {
-  width: 100%;
-  max-width: 700px;
-  margin: 25px auto 0;
-  position: relative;
-}
-
-#geminiMap {
-  width: 100%;
-  display: block;
-  overflow: visible;
-}
-
-.constellation-line {
-  stroke: #73bdff;
-  stroke-width: 1.5;
-  opacity: .55;
-  fill: none;
-  stroke-dasharray: 250;
-  stroke-dashoffset: 250;
-  transition: stroke-dashoffset 1.5s ease, opacity 1s;
-}
-
-.constellation-line.connected {
-  stroke-dashoffset: 0;
-  opacity: .95;
-  filter: drop-shadow(0 0 5px #55aaff);
-}
-
-.constellation-star {
-  fill: #c7e8ff;
-  filter: drop-shadow(0 0 5px #6bbaff);
-}
-
-.constellation-star.bright {
-  fill: white;
-  filter: drop-shadow(0 0 9px #62baff) drop-shadow(0 0 20px #258aff);
-}
-
-.star-label {
-  fill: #a8d8ff;
-  font-size: 11px;
-  letter-spacing: 1px;
-}
-
-.star-orbit {
-  fill: none;
-  stroke: rgba(102, 184, 255, .25);
-  stroke-width: 1;
-  stroke-dasharray: 3 7;
-}
-
-.birthday-mode .constellation-star {
-  animation: starShine 1.8s ease-in-out infinite alternate;
-}
-
-@keyframes starShine {
-  from { opacity: .6; filter: drop-shadow(0 0 5px #62baff); }
-  to { opacity: 1; filter: drop-shadow(0 0 16px #fff) drop-shadow(0 0 28px #258aff); }
-}
-
-.map-caption {
-  text-align: center;
-  color: #829ebf;
-  font-size: 12px;
-  line-height: 1.8;
-  margin-top: 15px;
-}
-
-.align-btn {
-  display: block;
-  margin: 25px auto 0;
-  border: 1px solid rgba(113, 180, 255, .4);
-  background: rgba(48, 119, 205, .14);
-  color: #c5e5ff;
-  border-radius: 40px;
-  padding: 12px 23px;
-  font-size: 11px;
-  letter-spacing: 2px;
-  transition: .3s;
-}
-
-.align-btn:hover {
-  background: rgba(48, 119, 205, .35);
-}
-
-/* BIRTHDAY MESSAGE */
-
-.birthday-message {
-  display: none;
-  text-align: center;
-  padding: 25px 10px 5px;
-  color: #c8e7ff;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(24px, 4vw, 35px);
-  line-height: 1.5;
-  animation: appear 2s both;
-}
-
-.birthday-mode .birthday-message { display: block; }
-
-@keyframes appear {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* CARDS */
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
+.feature-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:17px;
 }
 
 .feature-card {
-  min-height: 180px;
-  border-radius: 20px;
-  padding: 25px;
-  border: 1px solid rgba(125, 181, 255, .16);
-  background: var(--panel);
-  text-align: left;
-  color: white;
-  transition: .3s;
+  min-height:225px;
+  padding:25px;
+  border:1px solid #8bbfff20;
+  border-radius:23px;
+  background:linear-gradient(145deg,#142d4b99,#081426bb);
+  text-decoration:none;
+  color:white;
+  position:relative;
+  overflow:hidden;
+  transition:transform .3s,border-color .3s;
 }
 
 .feature-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(115, 185, 255, .5);
-  background: rgba(24, 58, 105, .7);
+  transform:translateY(-8px);
+  border-color:#7ebaff88;
 }
 
-.feature-icon {
-  font-size: 28px;
-  display: block;
-  margin-bottom: 17px;
+.card-icon {
+  font-size:2rem;
+  margin-bottom:28px;
+  display:block;
 }
 
 .feature-card h3 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 27px;
-  font-weight: 500;
-  margin-bottom: 8px;
+  font-size:1.15rem;
+  margin-bottom:9px;
 }
 
 .feature-card p {
-  color: #93aac8;
-  font-size: 12px;
-  line-height: 1.7;
+  color:#8faaca;
+  font-size:.78rem;
+  line-height:1.6;
 }
 
-.locked { opacity: .65; }
+.card-arrow {
+  position:absolute;
+  right:22px;
+  bottom:22px;
+  color:#8fc5ff;
+}
 
-@media(max-width:600px) {
-  .cards { grid-template-columns: 1fr; }
+.locked {
+  opacity:.57;
+  cursor:pointer;
+  text-align:left;
+}
+
+.lock-tag {
+  display:inline-block;
+  font-size:.58rem;
+  letter-spacing:.1em;
+  color:#a9cefa;
+  border:1px solid #80baff44;
+  border-radius:99px;
+  padding:5px 9px;
+  margin-top:14px;
 }
 
 /* BIRTHDAY ARCHIVE */
 
-.year-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+.archive {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:17px;
 }
 
-.year {
-  text-align: center;
-  padding: 30px 10px;
-  border: 1px solid rgba(125, 181, 255, .18);
-  border-radius: 18px;
-  background: rgba(14, 34, 65, .65);
-  color: white;
-  transition: .3s;
+.year-card {
+  padding:30px;
+  border-radius:22px;
+  border:1px solid #8bbfff25;
+  background:linear-gradient(145deg,#102746aa,#081426bb);
+  text-align:center;
+  transition:.3s;
 }
 
-.year:hover {
-  transform: translateY(-5px);
-  border-color: #67b5ff;
+.year-card:hover {
+  transform:translateY(-6px);
+  border-color:#8bc5ff88;
 }
 
-.year strong {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 34px;
-  display: block;
+.year-card .year {
+  font-size:2.6rem;
+  font-family:'Playfair Display',serif;
+  color:#b5d9ff;
 }
 
-.year small {
-  color: #91aacb;
-  font-size: 10px;
+.year-card p {
+  color:#91aaca;
+  font-size:.78rem;
+  margin:10px 0 20px;
 }
 
-@media(max-width:500px) {
-  .year-list { grid-template-columns: 1fr; }
+.year-card button {
+  border:1px solid #79b7f966;
+  border-radius:99px;
+  background:#397fc422;
+  color:#d8ecff;
+  padding:10px 18px;
+  cursor:pointer;
+  font-size:.72rem;
 }
 
-/* MODAL */
+/* GEMINI CONSTELLATION */
+
+.constellation {
+  position:relative;
+  min-height:350px;
+  max-width:780px;
+  margin:auto;
+  border:1px solid #81baff22;
+  border-radius:28px;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% 40%,#17477b88,transparent 65%),
+    radial-gradient(ellipse,#12366a66,transparent 70%),
+    #081426aa;
+  box-shadow:0 20px 70px #0004;
+}
+
+.constellation::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 15% 20%,#b9dcff44 1px,transparent 2px),
+    radial-gradient(circle at 85% 30%,#b9dcff44 1px,transparent 2px),
+    radial-gradient(circle at 55% 80%,#b9dcff44 1px,transparent 2px);
+  background-size:100px 90px,130px 120px,170px 140px;
+  opacity:.6;
+}
+
+.gemini-heading {
+  position:relative;
+  z-index:2;
+  text-align:center;
+  padding:25px 15px 0;
+}
+
+.gemini-sign {
+  font-size:2.8rem;
+  display:block;
+  color:#a8d9ff;
+  text-shadow:0 0 20px #4ba8ff,0 0 45px #1479ff;
+  animation:geminiPulse 3s ease-in-out infinite;
+}
+
+.gemini-heading h3 {
+  font-family:'Playfair Display',serif;
+  font-weight:500;
+  font-size:1.6rem;
+  margin-top:5px;
+}
+
+.gemini-heading p {
+  color:#85a9d0;
+  font-size:.6rem;
+  letter-spacing:.25em;
+  margin-top:5px;
+}
+
+@keyframes geminiPulse {
+  50% { transform:scale(1.1); opacity:.8; }
+}
+
+.gemini-map {
+  width:100%;
+  height:260px;
+  display:block;
+  position:relative;
+  z-index:1;
+  overflow:visible;
+}
+
+.gemini-lines path {
+  fill:none;
+  stroke:#78bdff;
+  stroke-width:1.6;
+  stroke-linecap:round;
+  stroke-dasharray:250;
+  stroke-dashoffset:250;
+  opacity:.75;
+  filter:drop-shadow(0 0 4px #419fff);
+  transition:stroke-dashoffset 1.4s ease,opacity .8s;
+}
+
+.gemini-lines path.connected {
+  stroke-dashoffset:0;
+  opacity:1;
+}
+
+.gemini-stars circle {
+  fill:#d9efff;
+  filter:drop-shadow(0 0 7px #63baff);
+  transform-box:fill-box;
+  transform-origin:center;
+  transition:filter .5s,fill .5s;
+}
+
+.gemini-stars circle.bright {
+  fill:#fff;
+  filter:drop-shadow(0 0 10px #fff) drop-shadow(0 0 22px #2995ff);
+}
+
+.gemini-stars circle.selected {
+  animation:starPop .6s ease;
+}
+
+@keyframes starPop {
+  50% { transform:scale(1.8); }
+}
+
+.gemini-stars .star-hit {
+  fill:transparent;
+  stroke:transparent;
+  cursor:pointer;
+}
+
+.gemini-stars .star-hit:focus {
+  outline:none;
+  stroke:#9bd7ff;
+  stroke-width:2;
+}
+
+.gemini-label {
+  fill:#a9d8ff;
+  font-size:11px;
+  letter-spacing:1.5px;
+  text-shadow:0 0 8px #398dff;
+  pointer-events:none;
+}
+
+.constellation-controls {
+  position:relative;
+  z-index:2;
+  padding:0 15px 22px;
+  text-align:center;
+}
+
+.constellation-message {
+  color:#cfe8ff;
+  font-size:.82rem;
+  line-height:1.7;
+  min-height:28px;
+  margin:5px 0 12px;
+}
+
+.align-btn {
+  border:1px solid #79b7f966;
+  border-radius:99px;
+  background:#397fc422;
+  color:#d8ecff;
+  padding:12px 22px;
+  font-size:.68rem;
+  letter-spacing:.13em;
+  transition:.3s;
+}
+
+.align-btn:hover {
+  background:#397fc455;
+  transform:translateY(-2px);
+}
+
+.gemini-caption {
+  color:#7999bd;
+  font-size:.67rem;
+  margin-top:12px;
+  line-height:1.7;
+}
+
+.birthday-reveal {
+  display:none;
+  color:#d8edff;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.3rem,4vw,2rem);
+  line-height:1.5;
+  padding:18px 5px 5px;
+  animation:reveal 2s both;
+}
+
+.birthday-reveal span {
+  display:block;
+  color:#8fcaff;
+  font-family:'DM Sans',sans-serif;
+  font-size:.75rem;
+  letter-spacing:.12em;
+  margin-top:8px;
+}
+
+body.birthday-mode .birthday-reveal {
+  display:block;
+}
+
+body.birthday-mode .gemini-stars circle:not(.star-hit) {
+  animation:starShine 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes starShine {
+  from { opacity:.65; }
+  to {
+    opacity:1;
+    filter:drop-shadow(0 0 13px white) drop-shadow(0 0 28px #258aff);
+  }
+}
+
+@keyframes reveal {
+  from { opacity:0; transform:translateY(15px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+body.birthday-mode .constellation {
+  border-color:#75baff66;
+  box-shadow:0 0 45px #277fdc22,0 20px 70px #0004;
+}
+
+/* DOG COMPANION */
+
+.dog {
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:30;
+  width:105px;
+  border:0;
+  background:transparent;
+  cursor:pointer;
+  filter:drop-shadow(0 8px 15px #0006);
+  animation:dogFloat 3.2s ease-in-out infinite;
+}
+
+.dog svg { width:100%; }
+
+@keyframes dogFloat {
+  50% { transform:translateY(-8px); }
+}
+
+.dog-speech {
+  position:fixed;
+  right:25px;
+  bottom:140px;
+  z-index:31;
+  padding:12px 15px;
+  border:1px solid #83bfff44;
+  border-radius:15px;
+  background:#09182df2;
+  color:#e0f1ff;
+  font-size:.78rem;
+  opacity:0;
+  transform:translateY(10px);
+  transition:.25s;
+  pointer-events:none;
+}
+
+.dog-speech.show {
+  opacity:1;
+  transform:none;
+}
+
+/* FLOATING BUTTERFLIES */
+
+.butterfly {
+  position:fixed;
+  z-index:2;
+  pointer-events:none;
+  font-size:20px;
+  opacity:0;
+  filter:drop-shadow(0 0 10px #70baff);
+  animation:butterflyFlight 18s ease-in-out infinite;
+}
+
+.b1 { top:28%;left:8%;animation-delay:-3s; }
+.b2 { top:70%;right:10%;animation-delay:-9s; }
+.b3 { top:13%;left:72%;animation-delay:-14s; }
+
+@keyframes butterflyFlight {
+  0% { opacity:0;transform:translate(0,30px) rotate(-15deg); }
+  15% { opacity:.7; }
+  50% { transform:translate(35px,-45px) rotate(12deg); }
+  85% { opacity:.65;transform:translate(-20px,-85px) rotate(-9deg); }
+  100% { opacity:0;transform:translate(5px,-120px); }
+}
+
+/* MODALS */
 
 .modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(1, 5, 15, .85);
-  backdrop-filter: blur(12px);
-  display: none;
-  place-items: center;
-  z-index: 200;
-  padding: 20px;
+  position:fixed;
+  inset:0;
+  z-index:2000;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:#010611cc;
+  backdrop-filter:blur(10px);
+  opacity:0;
+  visibility:hidden;
+  transition:.3s;
 }
 
-.modal.show { display: grid; }
+.modal.open {
+  opacity:1;
+  visibility:visible;
+}
 
 .modal-box {
-  width: min(450px, 100%);
-  border: 1px solid rgba(115, 184, 255, .3);
-  border-radius: 22px;
-  padding: 35px;
-  background: #0b1930;
-  text-align: center;
-  box-shadow: 0 0 70px rgba(38, 119, 220, .15);
+  position:relative;
+  width:min(450px,100%);
+  padding:40px 30px;
+  text-align:center;
+  border:1px solid #8bc5ff44;
+  border-radius:27px;
+  background:linear-gradient(145deg,#102746,#050d1b);
+  box-shadow:0 25px 90px #0009;
+  transform:translateY(15px);
+  transition:.3s;
 }
 
+.modal.open .modal-box { transform:none; }
+
 .modal-box h2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 36px;
-  font-weight: 400;
-  margin-bottom: 15px;
+  font-family:'Playfair Display',serif;
+  font-size:2rem;
+  margin:10px 0 15px;
 }
 
 .modal-box p {
-  color: #a4b8d1;
-  font-size: 13px;
-  line-height: 1.8;
+  color:#a9bfdc;
+  line-height:1.7;
+  font-size:.9rem;
 }
 
-.close-btn {
-  margin-top: 25px;
-  border: 1px solid rgba(115, 184, 255, .4);
-  border-radius: 30px;
-  padding: 10px 25px;
-  color: white;
-  background: transparent;
+.close-modal {
+  position:absolute;
+  right:15px;
+  top:12px;
+  border:0;
+  background:none;
+  color:white;
+  font-size:1.6rem;
+  cursor:pointer;
+}
+
+.wish-input {
+  width:100%;
+  margin:20px 0 13px;
+  padding:13px;
+  border:1px solid #719ed355;
+  border-radius:12px;
+  background:#061329;
+  color:white;
+  font:inherit;
+}
+
+.wish-result {
+  min-height:25px;
+  margin-top:15px;
+  color:#a9d5ff!important;
+}
+
+.modal-symbol {
+  font-size:3.5rem;
+  color:#a9d5ff;
+  text-shadow:0 0 30px #70baff;
 }
 
 /* FOOTER */
 
 footer {
-  border-top: 1px solid rgba(150, 195, 255, .12);
-  padding: 35px 20px;
-  text-align: center;
-  color: #7189a9;
-  font-size: 11px;
-  letter-spacing: 2px;
+  border-top:1px solid #8bbfff1b;
+  text-align:center;
+  padding:40px 20px;
+  color:#708ba9;
+  font-size:.72rem;
 }
 
-footer span { color: #8ecbff; }
+footer span { color:#91c7ff; }
+
+/* SHOOTING STARS */
 
 .shooting-star {
-  position: fixed;
-  width: 100px;
-  height: 1px;
-  background: linear-gradient(90deg, white, transparent);
-  transform: rotate(-35deg);
-  pointer-events: none;
-  z-index: -1;
-  animation: shoot 1.5s linear forwards;
+  position:fixed;
+  width:100px;
+  height:1px;
+  background:linear-gradient(90deg,white,transparent);
+  transform:rotate(-35deg);
+  pointer-events:none;
+  z-index:-1;
+  animation:shoot 1.5s linear forwards;
 }
 
 @keyframes shoot {
-  from { opacity: 1; transform: translate(0,0) rotate(-35deg); }
-  to { opacity: 0; transform: translate(-220px,220px) rotate(-35deg); }
+  from { opacity:1; transform:translate(0,0) rotate(-35deg); }
+  to { opacity:0; transform:translate(-220px,220px) rotate(-35deg); }
+}
+
+/* RESPONSIVE */
+
+@media(max-width:850px) {
+  .feature-grid { grid-template-columns:repeat(2,1fr); }
+}
+
+@media(max-width:600px) {
+  nav { padding:20px 0; }
+  .menu-btn { display:block; }
+
+  .nav-links {
+    display:none;
+    position:absolute;
+    top:70px;
+    right:0;
+    flex-direction:column;
+    gap:18px;
+    padding:22px;
+    border:1px solid #8bbfff33;
+    border-radius:17px;
+    background:#08172df5;
+  }
+
+  .nav-links.open { display:flex; }
+  .feature-grid,.archive { grid-template-columns:1fr; }
+  section.content-section { margin:75px auto; }
+  .hero { min-height:78vh; }
+  .hero-orbit { width:260px;height:260px; }
+  .dog { width:82px; right:8px; bottom:12px; }
+  .dog-speech { right:12px;bottom:112px; }
+  .constellation { min-height:320px; }
+  .gemini-map { height:220px; }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after {
+    animation-duration:.01ms!important;
+    scroll-behavior:auto!important;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="sky"></canvas>
+<canvas id="stars"></canvas>
+<div class="sky"></div>
 <div class="sky-glow"></div>
+<div id="particles"></div>
 
 <!-- WELCOME INTRO -->
+
 <div class="intro" id="intro">
   <div class="intro-content">
-    <span class="intro-star">✦</span>
-    <h1>WELCOME</h1>
-    <p>A LITTLE UNIVERSE MADE JUST FOR YOU</p>
-    <button class="enter-btn" onclick="enterUniverse()">ENTER THE UNIVERSE ✧</button>
+    <div class="intro-kicker">A LITTLE PLACE IN THE UNIVERSE</div>
+    <h1>welcome<span>.</span></h1>
+    <p>Your little universe is waiting.</p>
+    <button class="primary-btn" id="enterBtn">ENTER THE WORLD ✦</button>
   </div>
+  <div class="intro-foot">MADE OF LITTLE MOMENTS & BIG MAGIC</div>
 </div>
+
+<!-- BUTTERFLIES -->
+
+<div class="butterfly b1">🦋</div>
+<div class="butterfly b2">🦋</div>
+<div class="butterfly b3">🦋</div>
+
+<!-- NAVIGATION -->
 
 <nav>
   <div class="brand">WELCOME ✦</div>
-  <div class="nav-links">
-    <a href="#home">Home</a>
-    <a href="#gemini">Gemini</a>
-    <a href="#discover">Discover</a>
-    <a href="#birthdays">Birthdays</a>
-  </div>
+
+  <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#discover">Discover</a></li>
+    <li><a href="#birthdays">Birthdays</a></li>
+    <li><a href="#constellation">Stars</a></li>
+  </ul>
 </nav>
 
-<main>
-
 <!-- HERO -->
-<div class="hero" id="home">
-  <span class="eyebrow">A universe of little wonders</span>
-  <h1>Your own universe.</h1>
-  <p>
-    Somewhere between the stars, the moon, and all the little
-    moments that make life special, there's a universe waiting
-    for you to explore.
-  </p>
-  <button class="primary-btn" onclick="document.querySelector('#gemini').scrollIntoView({behavior:'smooth'})">
-    EXPLORE THE STARS ↓
-  </button>
-</div>
 
-<!-- GEMINI -->
-<section id="gemini">
-  <div class="section-heading">
-    <span>WRITTEN IN THE STARS</span>
-    <h2>Your constellation</h2>
-    <p>A little piece of the universe dedicated to Gemini ♊</p>
+<header class="hero" id="home">
+  <div class="hero-orbit"></div>
+  <div class="hero-moon"></div>
+
+  <div class="eyebrow">✦ A WORLD OF LITTLE WONDERS ✦</div>
+
+  <h1>Welcome to<br><em>your universe.</em></h1>
+
+  <p class="hero-desc">
+    A little corner of the internet filled with memories,
+    surprises, tiny details, and things worth keeping.
+  </p>
+
+  <div class="hero-actions">
+    <a class="primary-btn" href="#discover" style="text-decoration:none">
+      EXPLORE THE WORLD
+    </a>
+
+    <button class="secondary-btn" id="wishOpen">
+      MAKE A WISH ✧
+    </button>
   </div>
 
-  <div class="gemini-card">
-    <div class="gemini-title">
-      <span class="gemini-symbol">♊</span>
+  <div class="scroll-note">SCROLL TO DISCOVER ↓</div>
+</header>
+
+<!-- DISCOVER -->
+
+<section class="content-section" id="discover">
+  <div class="section-head">
+    <small>THE LITTLE UNIVERSE</small>
+    <h2>What would you like to explore?</h2>
+    <p>Every little corner has something different waiting.</p>
+  </div>
+
+  <div class="feature-grid">
+
+    <a href="#birthdays" class="feature-card">
+      <span class="card-icon">🎂</span>
+      <h3>Birthdays</h3>
+      <p>Little celebrations, one year at a time.</p>
+      <span class="card-arrow">↗</span>
+    </a>
+
+    <a href="#messages" class="feature-card">
+      <span class="card-icon">💌</span>
+      <h3>Messages</h3>
+      <p>Words, thoughts, and little notes.</p>
+      <span class="card-arrow">↗</span>
+    </a>
+
+    <button class="feature-card locked" data-locked>
+      <span class="card-icon">🖼️</span>
+      <h3>Gallery</h3>
+      <p>A collection of moments, coming soon.</p>
+      <span class="lock-tag">🔒 LOCKED FOR NOW</span>
+    </button>
+
+    <button class="feature-card locked" data-locked>
+      <span class="card-icon">✨</span>
+      <h3>AI Chat</h3>
+      <p>A little conversation corner, coming soon.</p>
+      <span class="lock-tag">🔒 LOCKED FOR NOW</span>
+    </button>
+
+  </div>
+</section>
+
+<!-- BIRTHDAY ARCHIVE -->
+
+<section class="content-section" id="birthdays">
+  <div class="section-head">
+    <small>A COLLECTION OF CELEBRATIONS</small>
+    <h2>Birthday archive.</h2>
+    <p>Every year deserves its own little universe.</p>
+  </div>
+
+  <div class="archive">
+    <div class="year-card">
+      <div class="year">2025</div>
+      <p>A memory from the past.</p>
+      <button onclick="openYear(2025)">OPEN YEAR ↗</button>
+    </div>
+
+    <div class="year-card">
+      <div class="year">2026</div>
+      <p>This year's celebration.</p>
+      <button onclick="openYear(2026)">OPEN YEAR ↗</button>
+    </div>
+
+    <div class="year-card">
+      <div class="year">2027</div>
+      <p>A new chapter waiting.</p>
+      <button onclick="openYear(2027)">OPEN YEAR ↗</button>
+    </div>
+  </div>
+</section>
+
+<!-- GEMINI CONSTELLATION -->
+
+<section class="content-section" id="constellation">
+  <div class="section-head">
+    <small>A SKY FULL OF LITTLE THINGS</small>
+    <h2>Connect the stars.</h2>
+    <p>A little constellation with a special place in this universe.</p>
+  </div>
+
+  <div class="constellation">
+
+    <div class="gemini-heading">
+      <span class="gemini-sign">♊</span>
       <h3>Gemini</h3>
       <p>THE TWINS · CASTOR & POLLUX</p>
     </div>
 
-    <div class="constellation-wrap">
-      <svg id="geminiMap" viewBox="0 0 600 390" role="img" aria-label="Illustrated Gemini constellation">
+    <svg class="gemini-map" viewBox="0 0 600 260"
+         preserveAspectRatio="xMidYMid meet"
+         role="img" aria-label="Gemini constellation">
 
-        <ellipse class="star-orbit" cx="300" cy="190" rx="235" ry="145"/>
+      <defs>
+        <radialGradient id="starGlow">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="40%" stop-color="#b8e0ff"/>
+          <stop offset="100%" stop-color="#55aaff" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
 
-        <!-- Constellation connecting lines -->
-        <g id="geminiLines">
-          <path class="constellation-line" d="M170 75 L215 125 L255 175 L300 230 L350 275"/>
-          <path class="constellation-line" d="M430 75 L390 125 L355 175 L300 230"/>
-          <path class="constellation-line" d="M170 75 L300 230"/>
-          <path class="constellation-line" d="M430 75 L300 230"/>
-          <path class="constellation-line" d="M215 125 L390 125"/>
-        </g>
+      <!-- Gemini constellation lines -->
+      <g class="gemini-lines">
+        <path d="M165 42 L190 85 L215 128 L250 173 L290 208"/>
+        <path d="M435 42 L410 85 L385 128 L350 173 L310 208"/>
+        <path d="M165 42 L435 42"/>
+        <path d="M190 85 L410 85"/>
+        <path d="M215 128 L385 128"/>
+        <path d="M250 173 L350 173"/>
+        <path d="M290 208 L310 208"/>
+      </g>
 
-        <!-- Gemini stars -->
-        <g id="geminiStars">
-          <circle class="constellation-star bright" cx="170" cy="75" r="7"/>
-          <circle class="constellation-star" cx="215" cy="125" r="4"/>
-          <circle class="constellation-star" cx="255" cy="175" r="4"/>
-          <circle class="constellation-star bright" cx="430" cy="75" r="7"/>
-          <circle class="constellation-star" cx="390" cy="125" r="4"/>
-          <circle class="constellation-star" cx="355" cy="175" r="4"/>
-          <circle class="constellation-star bright" cx="300" cy="230" r="5"/>
-          <circle class="constellation-star" cx="350" cy="275" r="4"/>
-        </g>
+      <!-- Stars -->
+      <g class="gemini-stars">
 
-        <text class="star-label" x="130" y="55">CASTOR</text>
-        <text class="star-label" x="440" y="55">POLLUX</text>
-        <text class="star-label" x="315" y="250">GEMINI</text>
-      </svg>
+        <circle cx="165" cy="42" r="7" class="bright"/>
+        <circle cx="190" cy="85" r="4"/>
+        <circle cx="215" cy="128" r="4"/>
+        <circle cx="250" cy="173" r="4"/>
+        <circle cx="290" cy="208" r="5"/>
+
+        <circle cx="435" cy="42" r="7" class="bright"/>
+        <circle cx="410" cy="85" r="4"/>
+        <circle cx="385" cy="128" r="4"/>
+        <circle cx="350" cy="173" r="4"/>
+        <circle cx="310" cy="208" r="5"/>
+
+        <!-- Invisible clickable areas -->
+        <circle class="star-hit" cx="165" cy="42" r="20" data-star="0"/>
+        <circle class="star-hit" cx="190" cy="85" r="18" data-star="1"/>
+        <circle class="star-hit" cx="215" cy="128" r="18" data-star="2"/>
+        <circle class="star-hit" cx="250" cy="173" r="18" data-star="3"/>
+        <circle class="star-hit" cx="290" cy="208" r="18" data-star="4"/>
+        <circle class="star-hit" cx="435" cy="42" r="20" data-star="5"/>
+        <circle class="star-hit" cx="410" cy="85" r="18" data-star="6"/>
+        <circle class="star-hit" cx="385" cy="128" r="18" data-star="7"/>
+        <circle class="star-hit" cx="350" cy="173" r="18" data-star="8"/>
+        <circle class="star-hit" cx="310" cy="208" r="18" data-star="9"/>
+
+      </g>
+
+      <text class="gemini-label" x="115" y="25">CASTOR</text>
+      <text class="gemini-label" x="445" y="25">POLLUX</text>
+      <text class="gemini-label" x="300" y="240" text-anchor="middle">GEMINI ♊</text>
+
+    </svg>
+
+    <div class="constellation-controls">
+      <div class="constellation-message" id="starMessage">
+        Tap a star to discover its little message ✦
+      </div>
+
+      <button class="align-btn" id="alignStars">
+        ✦ CONNECT THE STARS
+      </button>
+
+      <p class="gemini-caption">
+        Two stars. Two paths. One constellation.
+      </p>
+
+      <div class="birthday-reveal">
+        Today, the universe shines a little brighter for you.
+        <span>HAPPY BIRTHDAY · GEMINI ♊</span>
+      </div>
     </div>
 
-    <p class="map-caption">
-      Two stars. Two paths. One constellation.<br>
-      A little reminder that even the biggest universe has its special stars.
-    </p>
-
-    <button class="align-btn" onclick="alignGemini(true)">
-      ✦ CONNECT THE STARS
-    </button>
-
-    <div class="birthday-message">
-      Today, the universe shines a little brighter for you.<br>
-      <span style="font-size:16px;color:#8ecbff">Happy Birthday, Gemini. ♊</span>
-    </div>
   </div>
 </section>
 
-<!-- DISCOVER -->
-<section id="discover">
-  <div class="section-heading">
-    <span>YOUR LITTLE WORLD</span>
-    <h2>Explore something special</h2>
-    <p>Little corners of a universe made to be discovered.</p>
+<!-- MESSAGES -->
+
+<section class="content-section" id="messages">
+  <div class="section-head">
+    <small>WORDS TO KEEP</small>
+    <h2>Little messages.</h2>
+    <p>Some things are worth saying, even in the smallest ways.</p>
   </div>
 
-  <div class="cards">
-    <button class="feature-card" onclick="openModal('Birthdays','A little collection of birthday moments, years, and memories.')">
-      <span class="feature-icon">🎂</span>
-      <h3>Birthday memories</h3>
-      <p>Different years, different moments, one special story.</p>
-    </button>
-
-    <button class="feature-card" onclick="openModal('Little messages','Some words are worth keeping. This space is waiting for them.')">
-      <span class="feature-icon">✉️</span>
-      <h3>Messages</h3>
-      <p>A collection of little words and things worth remembering.</p>
-    </button>
-
-    <button class="feature-card locked" onclick="openModal('Gallery','A little gallery is being prepared. Its memories will arrive later.')">
-      <span class="feature-icon">🦋</span>
-      <h3>Gallery · Coming soon</h3>
-      <p>A place for pictures, memories, and moments.</p>
-    </button>
-
-    <button class="feature-card locked" onclick="openModal('A little surprise','Something special is still being prepared. ✨')">
-      <span class="feature-icon">🌙</span>
-      <h3>Secret corner · Coming soon</h3>
-      <p>Some things are better discovered when the time is right.</p>
-    </button>
+  <div class="feature-card" style="max-width:650px;margin:auto;text-align:center">
+    <span class="card-icon">💙</span>
+    <h3>A little note</h3>
+    <p>This space is waiting for the messages you want to add. Make it yours.</p>
   </div>
 </section>
 
-<!-- BIRTHDAYS -->
-<section id="birthdays">
-  <div class="section-heading">
-    <span>TIME CAPSULE</span>
-    <h2>Birthday archive</h2>
-    <p>Every year gets its own little place in the universe.</p>
+<!-- MOON SECTION -->
+
+<section class="content-section">
+  <div class="section-head">
+    <small>ONE LAST LITTLE THING</small>
+    <h2>There's always more magic.</h2>
+    <p>Look around. You might find something you didn't notice before.</p>
   </div>
 
-  <div class="year-list">
-    <button class="year" onclick="openBirthday(2025)">
-      <strong>2025</strong>
-      <small>THE FIRST CHAPTER</small>
-    </button>
-    <button class="year" onclick="openBirthday(2026)">
-      <strong>2026</strong>
-      <small>ANOTHER JOURNEY</small>
-    </button>
-    <button class="year" onclick="openBirthday(2027)">
-      <strong>2027</strong>
-      <small>THE NEXT CHAPTER</small>
-    </button>
+  <div style="text-align:center">
+    <button class="primary-btn" id="moonOpen">OPEN THE MOON ☾</button>
   </div>
 </section>
-
-</main>
 
 <footer>
-  MADE OF STARS <span>✦</span> AND LITTLE WONDERS
+  A little universe, made of little moments. <span>✦</span>
 </footer>
 
-<div class="modal" id="modal" onclick="if(event.target===this) closeModal()">
+<!-- MOON MODAL -->
+
+<div class="modal" id="moonModal">
   <div class="modal-box">
-    <h2 id="modalTitle">A little universe</h2>
-    <p id="modalText"></p>
-    <button class="close-btn" onclick="closeModal()">CLOSE ✦</button>
+    <button class="close-modal" data-close="moonModal">×</button>
+    <div class="modal-symbol">☾</div>
+    <div class="eyebrow">A NOTE FROM THE NIGHT SKY</div>
+    <h2>A place for a special memory.</h2>
+    <p>
+      Some moments are too lovely to leave behind.
+      This little moon is waiting for a memory to be added here.
+    </p>
   </div>
 </div>
 
+<!-- WISH MODAL -->
+
+<div class="modal" id="wishModal">
+  <div class="modal-box">
+    <button class="close-modal" data-close="wishModal">×</button>
+    <div class="modal-symbol">✧</div>
+    <div class="eyebrow">MAKE A LITTLE WISH</div>
+    <h2>The sky is listening.</h2>
+    <p>
+      Think of something you'd love to happen.
+      Keep it safe, then send it into the stars.
+    </p>
+
+    <input class="wish-input" id="wishInput" maxlength="120"
+           placeholder="Write your wish (optional)…">
+
+    <button class="primary-btn" id="sendWish">SEND MY WISH ✦</button>
+    <p class="wish-result" id="wishResult"></p>
+  </div>
+</div>
+
+<!-- PUPPY -->
+
+<button class="dog" id="dogBtn" aria-label="Say hello to the puppy">
+  <svg viewBox="0 0 140 130" role="img" aria-label="Cute blue puppy">
+    <ellipse cx="70" cy="116" rx="39" ry="7" fill="#0004"/>
+    <path d="M37 45 Q15 24 18 64 Q20 88 46 78Z"
+          fill="#4b8ed5" stroke="#a9d7ff" stroke-width="3"/>
+    <path d="M103 45 Q125 24 122 64 Q120 88 94 78Z"
+          fill="#4b8ed5" stroke="#a9d7ff" stroke-width="3"/>
+    <path d="M35 54 Q31 26 70 25 Q109 26 105 54 L101 91 Q94 111 70 111 Q46 111 39 91Z"
+          fill="#78baff" stroke="#c6e7ff" stroke-width="3"/>
+    <path d="M47 72 Q54 65 61 72 M79 72 Q86 65 93 72"
+          fill="none" stroke="#17365d" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="70" cy="84" rx="8" ry="6" fill="#17365d"/>
+    <path d="M70 90 Q65 99 58 94 M70 90 Q75 99 82 94"
+          fill="none" stroke="#17365d" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+</button>
+
+<div class="dog-speech" id="dogSpeech">woof! welcome ✨</div>
+
 <script>
-/* ======================================
+/* =====================================
    PERSONAL SETTINGS
-   ====================================== */
+   ===================================== */
 
 const SETTINGS = {
-  // IMPORTANT: Enter her actual birthday.
+  // Enter her actual birthday.
   // Example: month: 5, day: 18
   birthdayMonth: 6,
   birthdayDay: 3,
 
-  // Add the actual birthday website URLs here.
+  // Add the URLs of the birthday websites.
   birthdayLinks: {
     2025: "",
     2026: "",
@@ -757,173 +1263,349 @@ const SETTINGS = {
 };
 
 
-/* ======================================
-   WELCOME INTRO
-   ====================================== */
+/* =====================================
+   STARFIELD
+   ===================================== */
 
-function enterUniverse() {
-  document.getElementById('intro').classList.add('hidden');
-  localStorage.setItem('universeEntered', 'yes');
-}
-
-if (localStorage.getItem('universeEntered') === 'yes') {
-  document.getElementById('intro').classList.add('hidden');
-}
-
-
-/* ======================================
-   ANIMATED STAR SKY
-   ====================================== */
-
-const canvas = document.getElementById('sky');
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
 
 let stars = [];
-let width, height;
 
-function resizeSky() {
-  width = canvas.width = window.innerWidth * devicePixelRatio;
-  height = canvas.height = window.innerHeight * devicePixelRatio;
-  canvas.style.width = window.innerWidth + 'px';
-  canvas.style.height = window.innerHeight + 'px';
+function resizeStars() {
+  canvas.width = window.innerWidth * devicePixelRatio;
+  canvas.height = window.innerHeight * devicePixelRatio;
 
-  stars = Array.from({length: 180}, () => ({
-    x: Math.random() * width,
-    y: Math.random() * height,
-    radius: Math.random() * 1.5 + .3,
-    alpha: Math.random(),
-    speed: Math.random() * .008 + .002
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+
+  stars = Array.from({
+    length:Math.min(180,Math.floor(innerWidth/5))
+  },()=>({
+    x:Math.random()*innerWidth,
+    y:Math.random()*innerHeight,
+    r:Math.random()*1.4+.25,
+    alpha:Math.random()*.7+.2,
+    speed:Math.random()*.012+.003
   }));
 }
 
-function drawSky() {
-  ctx.clearRect(0, 0, width, height);
+function drawStars() {
+  ctx.clearRect(0,0,innerWidth,innerHeight);
 
-  stars.forEach(star => {
-    star.alpha += star.speed;
-    if (star.alpha > 1 || star.alpha < .2) star.speed *= -1;
+  stars.forEach(s=>{
+    s.alpha += s.speed;
+
+    if(s.alpha>.95 || s.alpha<.15) s.speed *= -1;
 
     ctx.beginPath();
-    ctx.arc(star.x, star.y, star.radius * devicePixelRatio, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(190,220,255,${star.alpha})`;
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(190,220,255,${s.alpha})`;
     ctx.fill();
   });
 
-  requestAnimationFrame(drawSky);
+  requestAnimationFrame(drawStars);
 }
 
-window.addEventListener('resize', resizeSky);
-resizeSky();
-drawSky();
+resizeStars();
+drawStars();
+
+window.addEventListener("resize",resizeStars);
 
 
-/* ======================================
+/* =====================================
+   FLOATING PARTICLES
+   ===================================== */
+
+const particleArea=document.getElementById("particles");
+
+for(let i=0;i<24;i++){
+  const p=document.createElement("i");
+
+  p.className="particle";
+  p.style.left=Math.random()*100+"%";
+  p.style.top=Math.random()*100+"%";
+  p.style.width=p.style.height=(Math.random()*3+1)+"px";
+  p.style.animationDuration=(Math.random()*18+12)+"s";
+  p.style.animationDelay=(-Math.random()*25)+"s";
+
+  particleArea.appendChild(p);
+}
+
+
+/* =====================================
+   INTRO
+   ===================================== */
+
+document.getElementById("enterBtn").addEventListener("click",()=>{
+  document.getElementById("intro").classList.add("hidden");
+});
+
+
+/* =====================================
+   MOBILE NAVIGATION
+   ===================================== */
+
+document.getElementById("menuBtn").addEventListener("click",()=>{
+  document.getElementById("navLinks").classList.toggle("open");
+});
+
+document.querySelectorAll(".nav-links a").forEach(a=>{
+  a.addEventListener("click",()=>{
+    document.getElementById("navLinks").classList.remove("open");
+  });
+});
+
+
+/* =====================================
+   MODALS
+   ===================================== */
+
+function openModal(id) {
+  document.getElementById(id).classList.add("open");
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove("open");
+}
+
+document.getElementById("moonOpen").addEventListener("click",()=>{
+  openModal("moonModal");
+});
+
+document.getElementById("wishOpen").addEventListener("click",()=>{
+  openModal("wishModal");
+});
+
+document.querySelectorAll("[data-close]").forEach(b=>{
+  b.addEventListener("click",()=>{
+    closeModal(b.dataset.close);
+  });
+});
+
+document.querySelectorAll(".modal").forEach(m=>{
+  m.addEventListener("click",e=>{
+    if(e.target===m) m.classList.remove("open");
+  });
+});
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    document.querySelectorAll(".modal").forEach(m=>{
+      m.classList.remove("open");
+    });
+  }
+});
+
+
+/* =====================================
+   WISH
+   ===================================== */
+
+document.getElementById("sendWish").addEventListener("click",()=>{
+  const field=document.getElementById("wishInput");
+
+  document.getElementById("wishResult").textContent=
+    field.value.trim()
+      ? "Your wish has been sent into the stars. Keep it close. ✨"
+      : "A quiet wish has been sent. May something lovely find you. ✨";
+
+  field.value="";
+});
+
+
+/* =====================================
    SHOOTING STARS
-   ====================================== */
+   ===================================== */
 
 function shootingStar() {
-  const star = document.createElement('div');
-  star.className = 'shooting-star';
-  star.style.left = Math.random() * 100 + 'vw';
-  star.style.top = Math.random() * 65 + 'vh';
+  const star=document.createElement("div");
+
+  star.className="shooting-star";
+  star.style.left=Math.random()*100+"vw";
+  star.style.top=Math.random()*65+"vh";
+
   document.body.appendChild(star);
 
-  setTimeout(() => star.remove(), 1600);
+  setTimeout(()=>star.remove(),1600);
 }
 
-setInterval(shootingStar, 4500);
+setInterval(shootingStar,4500);
 
 
-/* ======================================
-   GEMINI STAR ALIGNMENT
-   ====================================== */
+/* =====================================
+   GEMINI CONSTELLATION
+   ===================================== */
 
-let alignmentRunning = false;
+const starNotes = [
+  "Castor — one of Gemini's two brightest stars. ✦",
+  "A little reminder: you make ordinary days special.",
+  "Some moments deserve their own place in the sky.",
+  "A tiny wish is still a wish. Keep yours close.",
+  "Every little star has its own place in the universe.",
+  "Pollux — the other bright star of the Gemini twins. ✦",
+  "The best surprises are the ones you discover.",
+  "This little universe has more secrets waiting.",
+  "Never forget how much light you bring to a room.",
+  "And just like that, the constellation comes together. ♊"
+];
 
-function alignGemini(birthday = false) {
-  if (alignmentRunning) return;
+const starHits = [...document.querySelectorAll(".star-hit")];
+const geminiLines = [...document.querySelectorAll(".gemini-lines path")];
 
-  alignmentRunning = true;
+let connecting = false;
+let connectionTimers = [];
 
-  const lines = [...document.querySelectorAll('.constellation-line')];
+function showStarNote(index) {
+  document.getElementById("starMessage").textContent=starNotes[index];
 
-  lines.forEach(line => {
-    line.classList.remove('connected');
+  const visibleStars=document.querySelectorAll(".gemini-stars circle:not(.star-hit)");
+  const star=visibleStars[index];
+
+  if(star){
+    star.classList.remove("selected");
+    void star.getBoundingClientRect();
+    star.classList.add("selected");
+  }
+}
+
+starHits.forEach(hit=>{
+  const index=Number(hit.dataset.star);
+
+  hit.addEventListener("click",()=>{
+    showStarNote(index);
   });
 
-  // The stars connect one after another.
-  lines.forEach((line, index) => {
-    setTimeout(() => {
-      line.classList.add('connected');
+  hit.addEventListener("keydown",event=>{
+    if(event.key==="Enter" || event.key===" "){
+      event.preventDefault();
+      showStarNote(index);
+    }
+  });
 
-      if (index === lines.length - 1) {
-        alignmentRunning = false;
+  hit.setAttribute("tabindex","0");
+  hit.setAttribute("role","button");
+  hit.setAttribute("aria-label","Gemini star "+(index+1));
+});
+
+function connectGemini(isBirthday=false) {
+  if(connecting) return;
+
+  connecting=true;
+
+  connectionTimers.forEach(clearTimeout);
+  connectionTimers=[];
+
+  geminiLines.forEach(line=>{
+    line.classList.remove("connected");
+  });
+
+  const delay=isBirthday ? 900 : 450;
+
+  geminiLines.forEach((line,index)=>{
+    const timer=setTimeout(()=>{
+      line.classList.add("connected");
+
+      if(index===geminiLines.length-1){
+        connecting=false;
+
+        document.getElementById("starMessage").textContent=
+          isBirthday
+            ? "The Gemini stars have found their places. Happy Birthday. ♊"
+            : "The Gemini constellation is complete. ✦";
       }
-    }, index * (birthday ? 850 : 450));
+    },index*delay);
+
+    connectionTimers.push(timer);
   });
 }
 
+document.getElementById("alignStars").addEventListener("click",()=>{
+  connectGemini(false);
+});
 
-/* ======================================
-   BIRTHDAY SKY MODE
-   ====================================== */
+
+/* =====================================
+   BIRTHDAY MODE
+   ===================================== */
 
 function checkBirthday() {
-  const now = new Date();
+  const today=new Date();
 
-  const isBirthday =
-    now.getMonth() + 1 === SETTINGS.birthdayMonth &&
-    now.getDate() === SETTINGS.birthdayDay;
+  const isBirthday=
+    today.getMonth()+1===SETTINGS.birthdayMonth &&
+    today.getDate()===SETTINGS.birthdayDay;
 
-  if (isBirthday) {
-    document.body.classList.add('birthday-mode');
+  if(!isBirthday) return;
 
-    // Give the stars time to appear, then connect them.
-    setTimeout(() => alignGemini(true), 1200);
+  document.body.classList.add("birthday-mode");
 
-    // More shooting stars on her birthday.
-    setInterval(shootingStar, 1700);
-  }
+  // Let the birthday sky appear, then connect Gemini.
+  setTimeout(()=>{
+    connectGemini(true);
+  },1200);
+
+  // Extra shooting stars for the birthday atmosphere.
+  setInterval(shootingStar,1800);
 }
 
 checkBirthday();
 
 
-/* ======================================
-   MODALS
-   ====================================== */
+/* =====================================
+   LOCKED CARDS
+   ===================================== */
 
-function openModal(title, message) {
-  document.getElementById('modalTitle').textContent = title;
-  document.getElementById('modalText').textContent = message;
-  document.getElementById('modal').classList.add('show');
-}
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('show');
-}
-
-document.addEventListener('keydown', event => {
-  if (event.key === 'Escape') closeModal();
+document.querySelectorAll("[data-locked]").forEach(card=>{
+  card.addEventListener("click",()=>{
+    alert("This little corner is still a secret. Come back later! ✨");
+  });
 });
 
 
-/* ======================================
-   BIRTHDAY ARCHIVE LINKS
-   ====================================== */
+/* =====================================
+   BIRTHDAY ARCHIVE
+   ===================================== */
 
-function openBirthday(year) {
-  const url = SETTINGS.birthdayLinks[year];
+function openYear(year) {
+  const url=SETTINGS.birthdayLinks[year];
 
-  if (url && url.trim()) {
-    window.location.href = url;
+  if(url && url.trim()){
+    window.open(url,"_blank","noopener");
   } else {
-    openModal(
-      `${year} Birthday`,
-      `The ${year} birthday universe is waiting to be connected. Add its website URL in the SETTINGS section of this file.`
+    alert(
+      "The "+year+" birthday page hasn't been connected yet. 💙"
     );
   }
 }
+
+
+/* =====================================
+   PUPPY COMPANION
+   ===================================== */
+
+const dogLines=[
+  "woof! welcome ✨",
+  "you found me! 🐾",
+  "let's explore the stars!",
+  "sending you a little happiness 💙",
+  "psst… there are secrets around here."
+];
+
+let dogIndex=0;
+let dogTimer;
+
+document.getElementById("dogBtn").addEventListener("click",()=>{
+  const speech=document.getElementById("dogSpeech");
+
+  speech.textContent=dogLines[dogIndex++%dogLines.length];
+  speech.classList.add("show");
+
+  clearTimeout(dogTimer);
+
+  dogTimer=setTimeout(()=>{
+    speech.classList.remove("show");
+  },3200);
+});
 </script>
 
 </body>
