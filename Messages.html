@@ -4,823 +4,528 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Messages — Her Universe</title>
-<meta name="theme-color" content="#050b1b">
+<meta name="theme-color" content="#050b19">
+<title>Messages ✦</title>
+
+<script src="assets/private-guard.js"></script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 :root {
-  --bg:#050b1b;
-  --panel:rgba(13,27,55,.76);
-  --panel2:rgba(17,38,73,.72);
-  --blue:#62b9ff;
-  --cyan:#9beaff;
-  --muted:#8ba5c8;
-  --white:#eef7ff;
-  --border:rgba(120,185,255,.15);
+  --bg: #050b19;
+  --panel: rgba(12, 25, 49, .78);
+  --blue: #66baff;
+  --text: #e8f3ff;
+  --muted: #8298b5;
 }
 
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  min-height:100vh;
-  color:var(--white);
-  background:var(--bg);
-  font-family:'DM Sans',sans-serif;
-  overflow-x:hidden;
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 15% 10%, #102c52 0%, transparent 40%),
+    radial-gradient(ellipse at 90% 90%, #102044 0%, transparent 40%),
+    var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+  overflow: hidden;
 }
 
-#space{
-  position:fixed;
-  inset:0;
-  width:100%;
-  height:100%;
-  z-index:-3;
+.stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .4;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, white 99%, transparent),
+    radial-gradient(1px 1px at 70% 60%, white 99%, transparent),
+    radial-gradient(2px 2px at 40% 80%, #8ccaff 99%, transparent),
+    radial-gradient(1px 1px at 90% 15%, white 99%, transparent);
+  background-size: 230px 230px;
 }
 
-.glow{
-  position:fixed;
-  width:450px;
-  height:450px;
-  border-radius:50%;
-  filter:blur(110px);
-  opacity:.12;
-  pointer-events:none;
-  z-index:-2;
-}
-.glow.one{background:#167cff;top:-200px;left:-140px}
-.glow.two{background:#00cfff;bottom:-250px;right:-130px}
-
-.ascii{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:-1;
-  opacity:.075;
-  overflow:hidden;
-  color:#72bfff;
-  font:11px/1.7 monospace;
-  white-space:pre;
+.app {
+  position: relative;
+  z-index: 1;
+  width: min(900px, 100%);
+  height: 100dvh;
+  margin: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
-a{color:inherit;text-decoration:none}
-button{font:inherit;color:inherit;cursor:pointer}
-
-nav{
-  height:76px;
-  padding:0 6%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  border-bottom:1px solid var(--border);
-  background:rgba(4,10,25,.7);
-  backdrop-filter:blur(20px);
-  position:sticky;
-  top:0;
-  z-index:20;
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 4px 20px;
 }
 
-.logo{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:19px;
-  font-weight:700;
-  letter-spacing:2px;
-}
-.logo span{color:var(--blue)}
-
-.navlinks{display:flex;align-items:center;gap:26px}
-.navlinks a{
-  color:#91a9c9;
-  font-size:13px;
-  transition:.2s;
-}
-.navlinks a:hover,.navlinks a.active{color:var(--cyan)}
-.navlinks .locked{opacity:.35;cursor:not-allowed}
-
-.profile{
-  border:1px solid var(--border);
-  background:rgba(65,139,220,.1);
-  border-radius:30px;
-  padding:9px 14px;
-  font-size:12px;
-  color:var(--cyan);
+.brand {
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--blue);
+  font-weight: 700;
 }
 
-main{
-  width:min(1120px,90%);
-  margin:auto;
-  padding:65px 0 90px;
+.back {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
 }
 
-.hero{text-align:center;margin-bottom:43px}
-.eyebrow{
-  color:var(--blue);
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:4px;
-  text-transform:uppercase;
-}
-h1{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:clamp(38px,7vw,66px);
-  margin:13px 0;
-  letter-spacing:-2px;
-  background:linear-gradient(110deg,#fff,#9bdcff,#5d9eff);
-  -webkit-background-clip:text;
-  color:transparent;
-}
-.hero p{
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.8;
-  max-width:520px;
-  margin:auto;
+.chat {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid rgba(112, 183, 255, .19);
+  border-radius: 25px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 80px rgba(0,0,0,.3);
 }
 
-.tabs{
-  display:flex;
-  justify-content:center;
-  gap:9px;
-  flex-wrap:wrap;
-  margin-bottom:28px;
+.chat-header {
+  padding: 22px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-.tab{
-  padding:12px 19px;
-  border:1px solid var(--border);
-  border-radius:30px;
-  background:rgba(15,31,59,.6);
-  color:#91a9c9;
-  font-size:12px;
-  transition:.2s;
-}
-.tab:hover,.tab.active{
-  background:rgba(49,126,220,.2);
-  border-color:rgba(105,190,255,.5);
-  color:#c9edff;
-  box-shadow:0 0 20px rgba(50,140,255,.1);
+.avatar {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg,#24558a,#79c7ff);
+  color: white;
+  font-size: 19px;
+  box-shadow: 0 0 25px rgba(90,170,255,.2);
 }
 
-.section{display:none;animation:appear .35s ease}
-.section.active{display:block}
-@keyframes appear{
-  from{opacity:0;transform:translateY(8px)}
-  to{opacity:1;transform:translateY(0)}
+.header-info h2 {
+  font-size: 16px;
+  font-weight: 600;
 }
 
-.panel{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:22px;
-  backdrop-filter:blur(18px);
-  box-shadow:0 20px 65px rgba(0,0,0,.2);
+.header-info p {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
 }
 
-.panel-head{
-  padding:23px 25px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-  border-bottom:1px solid var(--border);
-}
-.panel-head h2{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:19px;
-}
-.panel-head p{color:var(--muted);font-size:11px;margin-top:5px}
-
-.count{
-  background:rgba(67,151,255,.13);
-  border:1px solid var(--border);
-  border-radius:30px;
-  color:var(--cyan);
-  padding:7px 12px;
-  font-size:11px;
+.online {
+  width: 7px;
+  height: 7px;
+  display: inline-block;
+  background: #72dba8;
+  border-radius: 50%;
+  margin-right: 5px;
 }
 
-.messages-list{
-  padding:20px;
-  display:grid;
-  gap:14px;
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  scroll-behavior: smooth;
 }
 
-.message{
-  background:var(--panel2);
-  border:1px solid rgba(119,177,245,.12);
-  border-radius:16px;
-  padding:19px;
-  transition:.2s;
-}
-.message:hover{
-  border-color:rgba(100,184,255,.36);
-  transform:translateY(-2px);
-}
-.message-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-bottom:13px;
-}
-.sender{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-weight:700;
-  font-size:13px;
-}
-.avatar{
-  width:34px;height:34px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg,#174b86,#10294e);
-  border:1px solid rgba(135,205,255,.25);
-  color:#b5e5ff;
-  font-size:13px;
-}
-.time{color:#7791b4;font-size:10px}
-.message-body{
-  font-size:13px;
-  line-height:1.8;
-  color:#d3e4f8;
-  overflow-wrap:anywhere;
-  white-space:pre-wrap;
-}
-.reactions{
-  display:flex;
-  gap:8px;
-  margin-top:16px;
-  flex-wrap:wrap;
-}
-.react{
-  border:1px solid var(--border);
-  background:rgba(5,15,35,.55);
-  border-radius:20px;
-  padding:6px 11px;
-  font-size:11px;
-  transition:.2s;
-}
-.react:hover,.react.selected{
-  border-color:#63baff;
-  background:rgba(65,151,255,.2);
-}
-.no-messages{
-  padding:50px 15px;
-  text-align:center;
-  color:var(--muted);
-  font-size:13px;
-  line-height:2;
-}
-.no-messages .big{font-size:35px;margin-bottom:10px}
-
-.composer{
-  padding:25px;
-}
-.field{margin-bottom:19px}
-.field label{
-  display:block;
-  font-size:11px;
-  color:#9bb8d9;
-  letter-spacing:1px;
-  margin-bottom:9px;
-}
-.field input,.field textarea,.field select{
-  width:100%;
-  border:1px solid var(--border);
-  background:rgba(3,11,26,.7);
-  color:white;
-  padding:14px 15px;
-  border-radius:12px;
-  outline:none;
-  font:13px 'DM Sans',sans-serif;
-  transition:.2s;
-}
-.field input:focus,.field textarea:focus,.field select:focus{
-  border-color:#55adff;
-  box-shadow:0 0 0 3px rgba(55,145,255,.1);
-}
-.field textarea{min-height:140px;resize:vertical;line-height:1.7}
-.field input::placeholder,.field textarea::placeholder{color:#607998}
-.field select option{background:#0a1930}
-.char-count{
-  text-align:right;
-  color:#718aaa;
-  font-size:10px;
-  margin-top:7px;
+.empty {
+  margin: auto;
+  text-align: center;
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 13px;
 }
 
-.btn{
-  border:1px solid rgba(110,190,255,.3);
-  border-radius:12px;
-  padding:13px 20px;
-  background:linear-gradient(110deg,#1766ba,#258bd0);
-  color:white;
-  font-weight:700;
-  font-size:12px;
-  box-shadow:0 8px 25px rgba(22,111,210,.18);
-  transition:.2s;
-}
-.btn:hover{filter:brightness(1.15);transform:translateY(-2px)}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn.secondary{
-  background:rgba(50,110,180,.12);
-  box-shadow:none;
-  color:#b8dfff;
-}
-.full{width:100%}
-
-.note{
-  margin-top:17px;
-  color:#7792b6;
-  font-size:11px;
-  line-height:1.7;
+.empty .symbol {
+  display: block;
+  font-size: 34px;
+  margin-bottom: 12px;
 }
 
-.private-banner{
-  padding:19px;
-  border-radius:15px;
-  background:rgba(43,113,192,.1);
-  border:1px solid rgba(100,180,255,.18);
-  color:#b6d9f9;
-  font-size:12px;
-  line-height:1.8;
-  margin-bottom:22px;
+.message-row {
+  display: flex;
+  flex-direction: column;
+  max-width: 78%;
+  align-self: flex-start;
 }
 
-.status{
-  padding:12px 14px;
-  border-radius:11px;
-  margin-bottom:16px;
-  font-size:12px;
-  display:none;
-  line-height:1.6;
+.message-row.mine {
+  align-self: flex-end;
+  align-items: flex-end;
 }
-.status.show{display:block}
-.status.success{background:rgba(35,180,125,.12);color:#8ce7c1;border:1px solid rgba(35,180,125,.2)}
-.status.error{background:rgba(220,70,90,.12);color:#ffb4c0;border:1px solid rgba(220,70,90,.2)}
-.status.info{background:rgba(65,145,240,.12);color:#a9d8ff;border:1px solid rgba(65,145,240,.2)}
 
-footer{
-  border-top:1px solid var(--border);
-  padding:28px 15px;
-  text-align:center;
-  color:#6884a8;
-  font-size:11px;
-  line-height:2;
+.sender {
+  font-size: 10px;
+  color: var(--muted);
+  margin: 0 8px 5px;
 }
-footer span{color:var(--blue)}
 
-@media(max-width:700px){
-  nav{padding:0 5%;height:68px}
-  .navlinks{gap:13px}
-  .navlinks a{font-size:11px}
-  .navlinks .optional{display:none}
-  .logo{font-size:15px}
-  .profile{display:none}
-  main{padding-top:48px}
-  .panel-head{padding:18px}
-  .messages-list{padding:13px}
-  .composer{padding:18px}
+.bubble {
+  padding: 12px 16px;
+  border-radius: 17px 17px 17px 5px;
+  background: rgba(36, 62, 96, .75);
+  border: 1px solid rgba(135,190,255,.12);
+  color: #edf6ff;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
-@media(max-width:390px){
-  .navlinks{gap:9px}
-  .navlinks a{font-size:10px}
+
+.mine .bubble {
+  background: linear-gradient(135deg,#1e65a4,#28558b);
+  border-color: rgba(125,195,255,.25);
+  border-radius: 17px 17px 5px 17px;
+}
+
+.time {
+  font-size: 9px;
+  color: #7187a5;
+  margin: 5px 8px 0;
+}
+
+.composer {
+  padding: 17px;
+  border-top: 1px solid rgba(255,255,255,.07);
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+#messageInput {
+  flex: 1;
+  min-width: 0;
+  resize: none;
+  max-height: 120px;
+  border: 1px solid rgba(120,180,255,.2);
+  border-radius: 15px;
+  padding: 13px 15px;
+  background: rgba(2,10,25,.55);
+  color: white;
+  outline: none;
+  font: inherit;
+  font-size: 14px;
+}
+
+#messageInput:focus {
+  border-color: var(--blue);
+}
+
+#messageInput::placeholder {
+  color: #7186a2;
+}
+
+#sendButton {
+  width: 48px;
+  height: 46px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg,#57b6ff,#3178c3);
+  color: white;
+  font-size: 19px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+#sendButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(65,160,255,.3);
+}
+
+#sendButton:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.status {
+  padding: 0 20px 12px;
+  min-height: 25px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+@media(max-width:600px) {
+  .app { padding: 10px; }
+  .topbar { padding: 10px 5px 15px; }
+  .chat { border-radius: 19px; }
+  .chat-header { padding: 17px; }
+  .messages { padding: 18px 13px; }
+  .message-row { max-width: 88%; }
+  .composer { padding: 12px; }
 }
 </style>
 </head>
 
 <body>
-<canvas id="space"></canvas>
-<div class="glow one"></div>
-<div class="glow two"></div>
-<div class="ascii" id="ascii"></div>
+<div class="stars"></div>
 
-<nav>
-  <a class="logo" href="index.html">HER <span>UNIVERSE ✦</span></a>
+<main class="app">
 
-  <div class="navlinks">
-    <a href="index.html">Home</a>
-    <a href="Birthday.html">Birthdays</a>
-    <a class="active" href="Messages.html">Messages</a>
-    <a class="optional locked" title="Coming soon">Gallery</a>
-    <a class="optional locked" title="Coming soon">ChatBot</a>
-  </div>
-
-  <div class="profile" id="profileName">✦ Visitor</div>
-</nav>
-
-<main>
-  <header class="hero">
-    <div class="eyebrow">A little corner of the universe</div>
-    <h1>Message Universe</h1>
-    <p>
-      Every wish, every little thought, every kind word.
-      Leave something beautiful in her universe. ✦
-    </p>
+  <header class="topbar">
+    <div class="brand">✦ PRIVATE UNIVERSE</div>
+    <a class="back" href="index.html">← Home</a>
   </header>
 
-  <div class="tabs">
-    <button class="tab active" data-tab="wall">✦ Message Wall</button>
-    <button class="tab" data-tab="private">♡ Message Jaidaa</button>
-    <button class="tab" data-tab="mine">☾ My Messages</button>
-  </div>
+  <section class="chat">
 
-  <!-- PUBLIC WALL -->
-  <section class="section active" id="wall">
-    <div class="panel">
-      <div class="panel-head">
-        <div>
-          <h2>✦ The Message Wall</h2>
-          <p>Little wishes from across the universe</p>
-        </div>
-        <div class="count" id="wallCount">0 wishes</div>
+    <header class="chat-header">
+      <div class="avatar">✦</div>
+
+      <div class="header-info">
+        <h2>Our Messages</h2>
+        <p><span class="online"></span>Private conversation</p>
       </div>
+    </header>
 
-      <div class="messages-list" id="wallList">
-        <div class="no-messages">
-          <div class="big">✧</div>
-          The stars are waiting for their first messages.
-        </div>
+    <div class="messages" id="messages">
+      <div class="empty">
+        <span class="symbol">✧</span>
+        Loading your conversation...
       </div>
     </div>
 
-    <div style="text-align:center;margin-top:22px">
-      <button class="btn" onclick="switchTab('compose')">✦ Leave a birthday wish</button>
-    </div>
-  </section>
+    <div class="status" id="status">Connecting...</div>
 
-  <!-- PRIVATE MESSAGE -->
-  <section class="section" id="private">
-    <div class="panel">
-      <div class="panel-head">
-        <div>
-          <h2>♡ A Message for Jaidaa</h2>
-          <p>Something just between you and her</p>
-        </div>
-        <div class="count">PRIVATE</div>
-      </div>
+    <form class="composer" id="messageForm">
+      <textarea
+        id="messageInput"
+        placeholder="Write something..."
+        rows="1"
+        maxlength="2000"
+        required
+      ></textarea>
 
-      <div class="composer">
-        <div class="private-banner">
-          🔒 This message is private. It will not appear on the public wall.
-          Only Jaidaa and authorized administrators can access it.
-        </div>
+      <button id="sendButton" type="submit">➤</button>
+    </form>
 
-        <div class="status" id="privateStatus"></div>
-
-        <div class="field">
-          <label>YOUR NICKNAME</label>
-          <input id="privateNickname" maxlength="24" placeholder="What should she call you?">
-        </div>
-
-        <div class="field">
-          <label>YOUR MESSAGE</label>
-          <textarea id="privateText" maxlength="1000" placeholder="Write something special..."></textarea>
-          <div class="char-count"><span id="privateLength">0</span>/1000</div>
-        </div>
-
-        <button class="btn full" id="privateSend">Send privately ♡</button>
-        <p class="note">Your nickname is a display name, not proof of identity. Avoid including personal contact information.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- COMPOSE PUBLIC -->
-  <section class="section" id="compose">
-    <div class="panel">
-      <div class="panel-head">
-        <div>
-          <h2>✦ Leave a Wish</h2>
-          <p>Add a little light to her birthday universe</p>
-        </div>
-        <div class="count">PUBLIC</div>
-      </div>
-
-      <div class="composer">
-        <div class="status" id="publicStatus"></div>
-
-        <div class="field">
-          <label>YOUR NICKNAME</label>
-          <input id="publicNickname" maxlength="24" placeholder="Choose your nickname">
-        </div>
-
-        <div class="field">
-          <label>YOUR BIRTHDAY WISH</label>
-          <textarea id="publicText" maxlength="500" placeholder="Write your birthday wish here..."></textarea>
-          <div class="char-count"><span id="publicLength">0</span>/500</div>
-        </div>
-
-        <button class="btn full" id="publicSend">Send to the universe ✦</button>
-        <p class="note">Public messages may be reviewed before appearing on the wall. Keep your message kind and don't include personal information.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- MY MESSAGES -->
-  <section class="section" id="mine">
-    <div class="panel">
-      <div class="panel-head">
-        <div>
-          <h2>☾ My Messages</h2>
-          <p>Your messages sent from this browser</p>
-        </div>
-        <div class="count" id="mineCount">0 sent</div>
-      </div>
-
-      <div class="messages-list" id="mineList">
-        <div class="no-messages">
-          <div class="big">☾</div>
-          Your sent messages will appear here.
-        </div>
-      </div>
-    </div>
-    <p class="note" style="text-align:center">
-      This personal history is saved in this browser. It is not an account or a verified identity.
-    </p>
   </section>
 </main>
 
-<footer>
-  Made with <span>♡</span> for a universe full of memories.<br>
-  HER UNIVERSE ✦
-</footer>
-
 <script>
-/* ==========================================
-   CONFIGURATION
-   Add your Supabase project details here.
-   Never put a service-role key in this file.
-========================================== */
-
 const SUPABASE_URL = "https://xevucdvjsezroxdqdjtz.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_OmnPPdFOmkn2PTinT_xxuA_kz_WtySy";
 
-let db = null;
-let connected = false;
+const API_URL =
+  `${SUPABASE_URL}/functions/v1/private-access`;
 
-const configReady =
-  SUPABASE_URL.startsWith("https://") &&
-  !SUPABASE_URL.includes("YOUR_") &&
-  SUPABASE_ANON_KEY.length > 30 &&
-  !SUPABASE_ANON_KEY.includes("YOUR_");
+const SESSION_KEY = "private_universe_session";
 
-if (configReady) {
-  const script = document.createElement("script");
-  script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-  script.onload = () => {
-    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    connected = true;
-    loadWall();
-    listenForMessages();
-  };
-  document.head.appendChild(script);
-}
+const messagesBox = document.getElementById("messages");
+const input = document.getElementById("messageInput");
+const form = document.getElementById("messageForm");
+const sendButton = document.getElementById("sendButton");
+const statusText = document.getElementById("status");
 
-/* ==========================================
-   VISITOR IDENTITY
-========================================== */
+let currentPerson = null;
+let lastMessageId = null;
+let isSending = false;
 
-function getVisitorId(){
-  let id = localStorage.getItem("universe_visitor_id");
+async function api(action, extra = {}) {
+  const token = localStorage.getItem(SESSION_KEY);
 
-  if(!id){
-    id = crypto.randomUUID();
-    localStorage.setItem("universe_visitor_id",id);
+  if (!token) {
+    throw new Error("Your session has expired.");
   }
 
-  return id;
-}
-
-const visitorId = getVisitorId();
-
-function getNickname(){
-  return localStorage.getItem("universe_nickname") || "";
-}
-
-function saveNickname(name){
-  localStorage.setItem("universe_nickname",name.trim());
-  updateProfile();
-}
-
-function updateProfile(){
-  const name = getNickname();
-  document.getElementById("profileName").textContent =
-    name ? "✦ " + name : "✦ Visitor";
-
-  document.getElementById("publicNickname").value = name;
-  document.getElementById("privateNickname").value = name;
-}
-
-updateProfile();
-
-/* ==========================================
-   NAVIGATION
-========================================== */
-
-function switchTab(tab){
-  document.querySelectorAll(".tab").forEach(b=>{
-    b.classList.toggle("active",b.dataset.tab===tab);
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": SUPABASE_ANON_KEY
+    },
+    body: JSON.stringify({
+      action,
+      token,
+      ...extra
+    })
   });
 
-  document.querySelectorAll(".section").forEach(s=>{
-    s.classList.toggle("active",s.id===tab);
-  });
+  const data = await response.json();
 
-  window.scrollTo({top:0,behavior:"smooth"});
+  if (response.status === 401) {
+    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem("private_universe_person");
+    localStorage.removeItem("private_universe_expiry");
+    location.replace("Login.html");
+    throw new Error("Please log in again.");
+  }
 
-  if(tab==="mine") renderMine();
+  if (!response.ok) {
+    throw new Error(data.error || "Something went wrong.");
+  }
+
+  return data;
 }
 
-document.querySelectorAll(".tab").forEach(button=>{
-  button.addEventListener("click",()=>switchTab(button.dataset.tab));
+function formatTime(dateString) {
+  const date = new Date(dateString);
+
+  return date.toLocaleString([], {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
+function createMessage(message) {
+  const mine = message.sender === currentPerson;
+
+  const row = document.createElement("div");
+  row.className = "message-row" + (mine ? " mine" : "");
+
+  const sender = document.createElement("div");
+  sender.className = "sender";
+  sender.textContent = mine ? "You" : "Jaidaa";
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = message.body;
+
+  const time = document.createElement("div");
+  time.className = "time";
+  time.textContent = formatTime(message.created_at);
+
+  row.append(sender, bubble, time);
+
+  return row;
+}
+
+async function loadMessages() {
+  const data = await api("list_messages");
+
+  if (!data.success) return;
+
+  const list = data.messages || [];
+  const newLastId = list.length
+    ? list[list.length - 1].id
+    : null;
+
+  if (newLastId === lastMessageId && list.length === messagesBox.querySelectorAll(".message-row").length) {
+    return;
+  }
+
+  const wasNearBottom =
+    messagesBox.scrollHeight -
+    messagesBox.scrollTop -
+    messagesBox.clientHeight < 100;
+
+  messagesBox.replaceChildren();
+
+  if (!list.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+
+    const symbol = document.createElement("span");
+    symbol.className = "symbol";
+    symbol.textContent = "✧";
+
+    const text = document.createElement("div");
+    text.textContent = "Your conversation starts here. Send the first message.";
+
+    empty.append(symbol, text);
+    messagesBox.appendChild(empty);
+  } else {
+    list.forEach(message => {
+      messagesBox.appendChild(createMessage(message));
+    });
+  }
+
+  lastMessageId = newLastId;
+
+  if (wasNearBottom || list.length <= 1) {
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+  }
+
+  statusText.textContent = "Your private conversation";
+}
+
+async function sendMessage(event) {
+  event.preventDefault();
+
+  const message = input.value.trim();
+
+  if (!message || isSending) return;
+
+  isSending = true;
+  sendButton.disabled = true;
+  statusText.textContent = "Sending...";
+
+  try {
+    await api("send_message", { message });
+
+    input.value = "";
+    input.style.height = "auto";
+
+    await loadMessages();
+
+    statusText.textContent = "Message sent ✦";
+
+  } catch (error) {
+    statusText.textContent = error.message;
+  } finally {
+    isSending = false;
+    sendButton.disabled = false;
+    input.focus();
+  }
+}
+
+input.addEventListener("input", () => {
+  input.style.height = "auto";
+  input.style.height =
+    Math.min(input.scrollHeight, 120) + "px";
 });
 
-/* ==========================================
-   STATUS MESSAGES
-========================================== */
+input.addEventListener("keydown", event => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    form.requestSubmit();
+  }
+});
 
-function showStatus(id,message,type="info"){
-  const el = document.getElementById(id);
-  el.textContent = message;
-  el.className = "status show " + type;
-}
+form.addEventListener("submit", sendMessage);
 
-/* ==========================================
-   LOCAL SENT MESSAGE HISTORY
-========================================== */
+async function startChat() {
+  try {
+    const verified = await api("verify");
 
-function getMine(){
-  try{
-    return JSON.parse(localStorage.getItem("universe_my_messages") || "[]");
-  }catch{
-    return [];
+    currentPerson = verified.person;
+
+    await loadMessages();
+
+    // Refresh conversation every 3 seconds.
+    setInterval(async () => {
+      try {
+        await loadMessages();
+      } catch (error) {
+        console.error(error);
+      }
+    }, 3000);
+
+  } catch (error) {
+    statusText.textContent = error.message;
   }
 }
 
-function saveMine(message){
-  const mine = getMine();
-  mine.unshift(message);
-  localStorage.setItem("universe_my_messages",JSON.stringify(mine.slice(0,100)));
-  renderMine();
-}
+startChat();
+</script>
 
-function renderMine(){
-  const list = document.getElementById("mineList");
-  const mine = getMine();
-
-  document.getElementById("mineCount").textContent = mine.length + " sent";
-
-  if(!mine.length){
-    list.innerHTML = `
-      <div class="no-messages">
-        <div class="big">☾</div>
-        Your sent messages will appear here.
-      </div>`;
-    return;
-  }
-
-  list.innerHTML = mine.map(m=>`
-    <article class="message">
-      <div class="message-top">
-        <div class="sender">
-          <div class="avatar">✦</div>
-          ${escapeHTML(m.nickname)}
-        </div>
-        <div class="time">${escapeHTML(m.date)}</div>
-      </div>
-      <div class="message-body">${escapeHTML(m.body)}</div>
-      <div class="reactions">
-        <span class="count">${m.visibility==="private"?"Private ♡":"Public ✦"}</span>
-        <span class="count">${escapeHTML(m.status || "Submitted")}</span>
-      </div>
-    </article>
-  `).join("");
-}
-
-/* ==========================================
-   MESSAGE SUBMISSION
-========================================== */
-
-async function submitMessage(visibility){
-  const isPrivate = visibility==="private";
-  const nameInput = document.getElementById(isPrivate?"privateNickname":"publicNickname");
-  const textInput = document.getElementById(isPrivate?"privateText":"publicText");
-  const statusId = isPrivate?"privateStatus":"publicStatus";
-  const button = document.getElementById(isPrivate?"privateSend":"publicSend");
-
-  const nickname = nameInput.value.trim();
-  const body = textInput.value.trim();
-
-  if(nickname.length<2){
-    showStatus(statusId,"Please enter a nickname with at least 2 characters.","error");
-    return;
-  }
-
-  if(!body){
-    showStatus(statusId,"Your message is empty. Write something first!","error");
-    return;
-  }
-
-  if(body.length < 3){
-    showStatus(statusId,"Please write a little more.","error");
-    return;
-  }
-
-  if(/https?:\/\/|www\.|[\w.+-]+@[\w.-]+\.[a-z]{2,}/i.test(body)){
-    showStatus(statusId,"Please don't include links or email addresses.","error");
-    return;
-  }
-
-  button.disabled=true;
-  button.textContent="Sending...";
-
-  try{
-    if(!connected || !db){
-      showStatus(statusId,
-        "Supabase isn't connected yet. Your message has NOT been sent. Configure the database first.",
-        "info");
-      return;
-    }
-
-    const record = {
-      nickname,
-      body,
-      visibility,
-      visitor_id:visitorId,
-      status:"pending"
-    };
-
-    const {data,error} = await db
-      .from("messages")
-      .insert(record)
-      .select("id")
-      .single();
-
-    if(error) throw error;
-
-    saveNickname(nickname);
-
-    saveMine({
-      id:data.id,
-      nickname,
-      body,
-      visibility,
-      date:new Date().toLocaleString(),
-      status:"Awaiting review"
-    });
-
-    textInput.value="";
-    updateCounter(isPrivate?"privateText":"publicText",
-                  isPrivate?"privateLength":"publicLength");
-
-    showStatus(statusId,
-      "Your message was submitted! It will appear after review. ✦",
-      "success");
-
-  }catch(error){
-    console.error(error);
-    showStatus(statusId,
-      "Couldn't send your message. Please try again later.",
-      "error");
-  }finally{
-    button.disabled=false;
-    button.textContent=isPrivate?"Send privately ♡":"Send to the universe ✦";
-  }
-}
-
-document.getElementById("publicSend").addEventListener("click",()=>submitMessage("public"));
-document.getElementById("privateSend").addEventListener("click",()=>submitMessage("private"));
-
-/* ==========================================
-   PUBLIC MESSAGE WALL
-========================================== */
-
-let wallMessages = [];
-
-async function loadWall(){
-  if(!connected || !db) return;
-
-  const {data,error} = await db
-    .from("messages")
-    .select("id,nickname,body,created_at")
-    .eq("visibility","public")
-    .eq("status","approved")
-    .order("created_at",{ascending:false})
-    .limit(100);
-
-  if(error){
-    console.error(error);
-    return;
-  }
-
-  wallMessages = data || [];
-  renderWall();
-}
-
-function renderWall(){
-  const list = document.getElementById("wallList");
-
-  document.getElementById("wallCount").tex
+</body>
+</html>
