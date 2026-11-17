@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050b1b">
+<title>Private Universe — Login</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:22px;
+  overflow:hidden;
+  color:#eef7ff;
+  background:#050b1b;
+  font-family:'DM Sans',sans-serif;
+}
+
+#stars{position:fixed;inset:0;width:100%;height:100%;z-index:-1}
+
+.glow{
+  position:fixed;
+  width:350px;height:350px;
+  border-radius:50%;
+  filter:blur(100px);
+  opacity:.16;z-index:-1;
+}
+.glow.a{background:#087bff;top:-150px;left:-100px}
+.glow.b{background:#00d9ff;bottom:-170px;right:-100px}
+
+.card{
+  width:min(420px,100%);
+  padding:36px;
+  text-align:center;
+  border:1px solid rgba(115,185,255,.2);
+  border-radius:25px;
+  background:rgba(12,26,53,.8);
+  backdrop-filter:blur(25px);
+  box-shadow:0 25px 90px rgba(0,0,0,.4);
+}
+
+.symbol{
+  font-size:32px;
+  color:#83ceff;
+  margin-bottom:17px;
+  text-shadow:0 0 25px #399eff;
+}
+
+.eyebrow{
+  font-size:10px;
+  letter-spacing:4px;
+  color:#70bcff;
+  text-transform:uppercase;
+}
+
+h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:35px;
+  margin:12px 0;
+  background:linear-gradient(100deg,#fff,#a5dcff,#68aaff);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.description{
+  color:#8da8c9;
+  font-size:13px;
+  line-height:1.8;
+  margin-bottom:27px;
+}
+
+.pin{
+  width:100%;
+  background:rgba(3,11,25,.8);
+  border:1px solid rgba(115,185,255,.23);
+  border-radius:13px;
+  padding:18px;
+  color:white;
+  text-align:center;
+  font-size:25px;
+  letter-spacing:13px;
+  outline:none;
+  font-family:monospace;
+  transition:.2s;
+}
+
+.pin:focus{
+  border-color:#66bfff;
+  box-shadow:0 0 20px rgba(65,150,255,.15);
+}
+
+.pin::placeholder{color:#405879}
+
+button{
+  width:100%;
+  border:0;
+  padding:15px;
+  border-radius:12px;
+  margin-top:17px;
+  background:linear-gradient(110deg,#1768bd,#258fd5);
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:hover{filter:brightness(1.15);transform:translateY(-2px)}
+button:disabled{opacity:.5;cursor:wait;transform:none}
+
+.status{
+  display:none;
+  margin-top:16px;
+  font-size:12px;
+  line-height:1.6;
+  padding:12px;
+  border-radius:10px;
+}
+.status.show{display:block}
+.status.error{color:#ffb3c1;background:rgba(220,70,90,.12)}
+.status.success{color:#91ebc3;background:rgba(35,180,125,.12)}
+
+.footer{
+  margin-top:27px;
+  color:#587493;
+  font-size:10px;
+  letter-spacing:1px;
+}
+
+@media(max-width:420px){
+  .card{padding:28px 22px}
+  h1{font-size:30px}
+}
+</style>
+</head>
+
+<body>
+<canvas id="stars"></canvas>
+<div class="glow a"></div>
+<div class="glow b"></div>
+
+<main class="card">
+  <div class="symbol">✦</div>
+  <div class="eyebrow">A private little universe</div>
+  <h1>Welcome back.</h1>
+  <p class="description">
+    Some places are meant for two.<br>
+    Enter your personal access code.
+  </p>
+
+  <form id="loginForm">
+    <input
+      class="pin"
+      id="pin"
+      type="password"
+      inputmode="numeric"
+      autocomplete="off"
+      maxlength="4"
+      pattern="[0-9]{4}"
+      placeholder="••••"
+      aria-label="Four digit access code"
+      required
+    >
+
+    <button id="submit" type="submit">Enter the universe ✦</button>
+  </form>
+
+  <div class="status" id="status" role="status"></div>
+
+  <div class="footer">ONLY TWO PEOPLE · ONE UNIVERSE</div>
+</main>
+
+<script>
+const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+
+const FUNCTION_URL =
+  SUPABASE_URL.replace(/\/$/,"") + "/functions/v1/private-access";
+
+const form = document.getElementById("loginForm");
+const pinInput = document.getElementById("pin");
+const button = document.getElementById("submit");
+const statusBox = document.getElementById("status");
+
+function status(message,type="error"){
+  statusBox.textContent=message;
+  statusBox.className="status show "+type;
+}
+
+function destination(){
+  const requested=new URLSearchParams(location.search).get("next");
+  const allowed=["Messages.html","Gallery.html","ChatBot.html","index.html"];
+  return allowed.includes(requested)?requested:"Messages.html";
+}
+
+async function request(action,extra={}){
+  const response=await fetch(FUNCTION_URL,{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "apikey":SUPABASE_ANON_KEY,
+      "Authorization":"Bearer "+SUPABASE_ANON_KEY
+    },
+    body:JSON.stringify({action,...extra})
+  });
+
+  const result=await response.json();
+
+  if(!response.ok) throw new Error(result.error || "Request failed");
+  return result;
+}
+
+form.addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const pin=pinInput.value;
+
+  if(!/^\d{4}$/.test(pin)){
+    status("Please enter all four digits.");
+    return;
+  }
+
+  button.disabled=true;
+  button.textContent="Opening your universe...";
+
+  try{
+    const result=await request("login",{pin});
+
+    localStorage.setItem("private_universe_session",result.token);
+    localStorage.setItem("private_universe_person",result.person);
+    localStorage.setItem("private_universe_expiry",result.expiresAt);
+
+    status("Welcome. Opening your universe...","success");
+
+    location.href=destination();
+
+  }catch(error){
+    status(error.message);
+    pinInput.value="";
+    pinInput.focus();
+  }finally{
+    button.disabled=false;
+    button.textContent="Enter the universe ✦";
+  }
+});
+
+/* Starfield */
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+let stars=[];
+
+function resize(){
+  const dpr=Math.min(devicePixelRatio||1,2);
+  canvas.width=innerWidth*dpr;
+  canvas.height=innerHeight*dpr;
+  canvas.style.width=innerWidth+"px";
+  canvas.style.height=innerHeight+"px";
+
+  stars=Array.from({length:130},()=>({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*1.5+.3,
+    a:Math.random()*.7+.2
+  }));
+}
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s=>{
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(145,205,255,${s.a*(.7+.3*Math.sin(Date.now()*.001+s.x))})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(animate);
+}
+
+addEventListener("resize",resize);
+resize();
+animate();
+</script>
+</body>
+</html>
