@@ -199,20 +199,23 @@ function destination(){
   return allowed.includes(requested)?requested:"Messages.html";
 }
 
+
 async function request(action,extra={}){
-  const response=await fetch(FUNCTION_URL,{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "apikey":SUPABASE_ANON_KEY,
-      "Authorization":"Bearer "+SUPABASE_ANON_KEY
+  const response = await fetch(FUNCTION_URL,{
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": SUPABASE_ANON_KEY
     },
-    body:JSON.stringify({action,...extra})
+    body: JSON.stringify({action,...extra})
   });
 
-  const result=await response.json();
+  const result = await response.json();
 
-  if(!response.ok) throw new Error(result.error || "Request failed");
+  if(!response.ok) {
+    throw new Error(result.error || "Request failed");
+  }
+
   return result;
 }
 
