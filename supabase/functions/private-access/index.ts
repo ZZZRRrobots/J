@@ -1,5 +1,3 @@
-const SUPABASE_URL = "https://xevucdvjsezroxdqdjtz.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_OmnPPdFOmkn2PTinT_xxuA_kz_WtySy";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
