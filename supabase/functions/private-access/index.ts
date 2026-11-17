@@ -1,4 +1,3 @@
-
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -147,8 +146,7 @@ Deno.serve(async req => {
       });
     }
 
-    // VERIFY SESSION
-    // Every private chat action must pass through this check.
+    // SESSION ACTIONS
     if (
       action === "verify" ||
       action === "logout" ||
@@ -188,10 +186,12 @@ Deno.serve(async req => {
 
       // LOGOUT
       if (action === "logout") {
-        await client
+        const { error } = await client
           .from("private_sessions")
           .delete()
           .eq("token_hash", tokenHash);
+
+        if (error) throw error;
 
         return json({ success: true });
       }
@@ -205,7 +205,7 @@ Deno.serve(async req => {
         });
       }
 
-      // LIST PRIVATE MESSAGES
+      // LOAD MESSAGES
       if (action === "list_messages") {
         const { data, error } = await client
           .from("private_messages")
@@ -224,7 +224,7 @@ Deno.serve(async req => {
         });
       }
 
-      // SEND PRIVATE MESSAGE
+      // SEND MESSAGE
       if (action === "send_message") {
         const message = String(body.message || "").trim();
 
@@ -234,7 +234,6 @@ Deno.serve(async req => {
           }, 400);
         }
 
-        // Basic per-person sending limit: 20 messages per minute.
         const since = new Date(
           Date.now() - 60 * 1000
         ).toISOString();
@@ -249,11 +248,10 @@ Deno.serve(async req => {
 
         if ((count || 0) >= 20) {
           return json({
-            error: "Please wait a moment before sending more messages."
+            error: "Please wait before sending more messages."
           }, 429);
         }
 
-        // The server chooses the sender and recipient.
         const recipient = person === "you" ? "jaidaa" : "you";
 
         const { data, error } = await client
@@ -282,4 +280,3 @@ Deno.serve(async req => {
     return json({ error: "Something went wrong." }, 500);
   }
 });
-    
