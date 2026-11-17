@@ -1,0 +1,662 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050b18">
+<title>Welcome — A Little Universe</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
+:root {
+  --bg: #050b18;
+  --blue: #63aaff;
+  --light: #d9edff;
+  --muted: #91aaca;
+  --panel: rgba(12,28,53,.72);
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--bg);
+  color:white;
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
+}
+button { font:inherit; }
+button:focus-visible,a:focus-visible { outline:2px solid #9bd0ff; outline-offset:4px; }
+
+#stars {
+  position:fixed; inset:0; z-index:-5;
+  width:100%; height:100%; pointer-events:none;
+}
+.sky {
+  position:fixed; inset:-10%; z-index:-4;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 15% 20%,#12376a55,transparent 35%),
+    radial-gradient(ellipse at 85% 65%,#164b8850,transparent 35%),
+    radial-gradient(ellipse at 50% 100%,#10294d55,transparent 50%);
+}
+.sky-glow {
+  position:fixed; width:700px; height:700px;
+  border-radius:50%; z-index:-3; pointer-events:none;
+  background:#2368bb18; filter:blur(100px);
+  left:50%; top:35%; transform:translate(-50%,-50%);
+}
+#particles {
+  position:fixed; inset:0; z-index:-2;
+  pointer-events:none; overflow:hidden;
+}
+.particle {
+  position:absolute; border-radius:50%;
+  background:#a8d5ff; opacity:.5;
+  box-shadow:0 0 12px #70baff;
+  animation:drift linear infinite;
+}
+@keyframes drift {
+  from { transform:translateY(20px); opacity:0; }
+  20% { opacity:.6; }
+  to { transform:translateY(-110vh); opacity:0; }
+}
+
+/* WELCOME INTRO */
+.intro {
+  position:fixed; inset:0; z-index:1000;
+  display:grid; place-items:center;
+  background:radial-gradient(ellipse at center,#102d59,#050b18 70%);
+  transition:opacity 1s,visibility 1s;
+}
+.intro.hidden { opacity:0; visibility:hidden; pointer-events:none; }
+.intro-content { text-align:center; padding:25px; animation:rise 1.2s ease both; }
+.intro-kicker {
+  color:#8fc5ff; letter-spacing:.35em;
+  font-size:.65rem; margin-bottom:22px;
+}
+.intro h1 {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(5rem,16vw,10rem);
+  letter-spacing:-.07em; font-weight:500;
+  text-shadow:0 0 50px #69b4ff55;
+}
+.intro h1 span { color:var(--blue); }
+.intro p { color:#b2c9e7; margin:20px 0 35px; }
+.primary-btn {
+  border:1px solid #8bc5ff77;
+  background:#397fc42b; color:white;
+  border-radius:99px; padding:15px 26px;
+  letter-spacing:.15em; font-size:.7rem;
+  cursor:pointer; transition:.3s;
+}
+.primary-btn:hover { background:#397fc466; transform:translateY(-3px); }
+.intro-foot {
+  position:absolute; bottom:28px;
+  color:#6e8bab; letter-spacing:.2em;
+  font-size:.58rem;
+}
+
+/* NAVIGATION */
+nav {
+  width:min(1150px,92%); margin:auto;
+  padding:25px 0; display:flex;
+  justify-content:space-between; align-items:center;
+  position:relative; z-index:10;
+}
+.brand {
+  color:#cfe7ff; letter-spacing:.18em;
+  font-size:.8rem; font-weight:700;
+}
+.nav-links { display:flex; gap:27px; list-style:none; }
+.nav-links a {
+  color:#9eb6d5; text-decoration:none;
+  font-size:.78rem; transition:.2s;
+}
+.nav-links a:hover { color:white; }
+.menu-btn {
+  display:none; border:0; background:none;
+  color:white; font-size:1.5rem; cursor:pointer;
+}
+
+/* HERO */
+.hero {
+  min-height:83vh; display:flex;
+  flex-direction:column; align-items:center;
+  justify-content:center; text-align:center;
+  padding:50px 20px 100px; position:relative;
+}
+.hero-orbit {
+  position:absolute; width:310px; height:310px;
+  border:1px solid #8bc5ff20; border-radius:50%;
+  animation:orbit 35s linear infinite;
+}
+.hero-orbit:before {
+  content:""; position:absolute; width:10px;height:10px;
+  background:#a9d8ff; border-radius:50%;
+  box-shadow:0 0 25px 8px #5daaff88;
+  top:30px; left:45px;
+}
+.hero-moon {
+  position:absolute; width:115px;height:115px;
+  border-radius:50%; top:calc(50% - 240px);
+  background:radial-gradient(circle at 32% 30%,#fff,#b7d8fa 30%,#4675a9 75%);
+  box-shadow:0 0 70px #6caeff44;
+  opacity:.8;
+}
+@keyframes orbit { to { transform:rotate(360deg); } }
+.eyebrow {
+  color:#8dbfff; letter-spacing:.3em;
+  font-size:.68rem; margin-bottom:22px;
+}
+.hero h1 {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(3.4rem,10vw,7.3rem);
+  font-weight:500; letter-spacing:-.055em;
+  line-height:1.05; position:relative;
+}
+.hero h1 em { color:#83bcf7; font-style:normal; }
+.hero-desc {
+  color:#9eb5d2; max-width:510px;
+  line-height:1.8; margin:25px auto 32px;
+}
+.hero-actions { display:flex; gap:13px; flex-wrap:wrap; justify-content:center; }
+.secondary-btn {
+  padding:14px 24px; border:1px solid #6c9dcc55;
+  border-radius:99px; color:#cde5ff;
+  background:#10274655; text-decoration:none;
+  font-size:.75rem; transition:.25s;
+}
+.secondary-btn:hover { background:#1b4777; transform:translateY(-3px); }
+.scroll-note {
+  position:absolute; bottom:24px;
+  color:#6885a9; font-size:.65rem;
+  letter-spacing:.2em;
+}
+
+/* SECTION COMMON */
+section.content-section {
+  width:min(1100px,90%); margin:100px auto;
+}
+.section-head { text-align:center; margin-bottom:40px; }
+.section-head small {
+  color:#79b9ff; letter-spacing:.25em;
+  font-size:.65rem; text-transform:uppercase;
+}
+.section-head h2 {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.4rem,6vw,4rem);
+  font-weight:500; margin:12px 0;
+}
+.section-head p { color:#91aaca; line-height:1.7; }
+
+/* FEATURE CARDS */
+.feature-grid {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:17px;
+}
+.feature-card {
+  min-height:225px; padding:25px;
+  border:1px solid #8bbfff20;
+  border-radius:23px;
+  background:linear-gradient(145deg,#142d4b99,#081426bb);
+  text-decoration:none; color:white;
+  position:relative; overflow:hidden;
+  transition:transform .3s,border-color .3s;
+}
+.feature-card:hover { transform:translateY(-8px); border-color:#7ebaff88; }
+.card-icon { font-size:2rem; margin-bottom:28px; display:block; }
+.feature-card h3 { font-size:1.15rem; margin-bottom:9px; }
+.feature-card p { color:#8faaca; font-size:.78rem; line-height:1.6; }
+.card-arrow { position:absolute; right:22px; bottom:22px; color:#8fc5ff; }
+.locked { opacity:.57; cursor:pointer; }
+.lock-tag {
+  display:inline-block; font-size:.58rem;
+  letter-spacing:.1em; color:#a9cefa;
+  border:1px solid #80baff44; border-radius:99px;
+  padding:5px 9px; margin-top:14px;
+}
+
+/* BIRTHDAY ARCHIVE */
+.archive {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:17px;
+}
+.year-card {
+  padding:30px; border-radius:22px;
+  border:1px solid #8bbfff25;
+  background:linear-gradient(145deg,#102746aa,#081426bb);
+  text-align:center; transition:.3s;
+}
+.year-card:hover { transform:translateY(-6px); border-color:#8bc5ff88; }
+.year-card .year { font-size:2.6rem; font-family:'Playfair Display',serif; color:#b5d9ff; }
+.year-card p { color:#91aaca; font-size:.78rem; margin:10px 0 20px; }
+.year-card button {
+  border:1px solid #79b7f966; border-radius:99px;
+  background:#397fc422; color:#d8ecff;
+  padding:10px 18px; cursor:pointer; font-size:.72rem;
+}
+
+/* CONSTELLATION */
+.constellation {
+  position:relative; height:320px; max-width:780px;
+  margin:auto; border:1px solid #81baff22;
+  border-radius:28px; overflow:hidden;
+  background:radial-gradient(ellipse,#12366a66,transparent 70%),#081426aa;
+}
+.constellation svg { width:100%; height:100%; position:absolute; }
+.constellation path {
+  fill:none; stroke:#80baff55; stroke-width:1.4;
+  stroke-dasharray:4 9;
+}
+.star-point {
+  position:absolute; width:13px;height:13px;
+  border:0; border-radius:50%; background:#e3f3ff;
+  box-shadow:0 0 12px 4px #6cb6ff99;
+  cursor:pointer; transition:.2s;
+}
+.star-point:hover { transform:scale(1.8); }
+.star-point:nth-of-type(1){left:15%;top:55%}
+.star-point:nth-of-type(2){left:31%;top:22%}
+.star-point:nth-of-type(3){left:48%;top:44%}
+.star-point:nth-of-type(4){left:65%;top:16%}
+.star-point:nth-of-type(5){left:83%;top:49%}
+.star-point:nth-of-type(6){left:71%;top:73%}
+.constellation-message {
+  position:absolute; bottom:18px; left:15px; right:15px;
+  text-align:center; color:#d8ecff; font-size:.85rem;
+}
+
+/* DOG COMPANION */
+.dog {
+  position:fixed; right:20px; bottom:20px;
+  z-index:30; width:105px; border:0;
+  background:transparent; cursor:pointer;
+  filter:drop-shadow(0 8px 15px #0006);
+  animation:dogFloat 3.2s ease-in-out infinite;
+}
+.dog svg { width:100%; }
+@keyframes dogFloat { 50% { transform:translateY(-8px); } }
+.dog-speech {
+  position:fixed; right:25px; bottom:140px;
+  z-index:31; padding:12px 15px;
+  border:1px solid #83bfff44; border-radius:15px;
+  background:#09182df2; color:#e0f1ff;
+  font-size:.78rem; opacity:0;
+  transform:translateY(10px); transition:.25s;
+  pointer-events:none;
+}
+.dog-speech.show { opacity:1; transform:none; }
+
+/* FLOATING BUTTERFLIES */
+.butterfly {
+  position:fixed; z-index:2; pointer-events:none;
+  font-size:20px; opacity:0;
+  filter:drop-shadow(0 0 10px #70baff);
+  animation:butterflyFlight 18s ease-in-out infinite;
+}
+.b1 { top:28%;left:8%;animation-delay:-3s; }
+.b2 { top:70%;right:10%;animation-delay:-9s; }
+.b3 { top:13%;left:72%;animation-delay:-14s; }
+@keyframes butterflyFlight {
+  0% { opacity:0;transform:translate(0,30px) rotate(-15deg); }
+  15% { opacity:.7; }
+  50% { transform:translate(35px,-45px) rotate(12deg); }
+  85% { opacity:.65;transform:translate(-20px,-85px) rotate(-9deg); }
+  100% { opacity:0;transform:translate(5px,-120px); }
+}
+
+/* MODALS */
+.modal {
+  position:fixed; inset:0; z-index:2000;
+  display:grid; place-items:center; padding:20px;
+  background:#010611cc; backdrop-filter:blur(10px);
+  opacity:0; visibility:hidden; transition:.3s;
+}
+.modal.open { opacity:1;visibility:visible; }
+.modal-box {
+  position:relative; width:min(450px,100%);
+  padding:40px 30px; text-align:center;
+  border:1px solid #8bc5ff44; border-radius:27px;
+  background:linear-gradient(145deg,#102746,#050d1b);
+  box-shadow:0 25px 90px #0009;
+  transform:translateY(15px); transition:.3s;
+}
+.modal.open .modal-box { transform:none; }
+.modal-box h2 {
+  font-family:'Playfair Display',serif;
+  font-size:2rem; margin:10px 0 15px;
+}
+.modal-box p { color:#a9bfdc; line-height:1.7; font-size:.9rem; }
+.close-modal {
+  position:absolute; right:15px;top:12px;
+  border:0;background:none;color:white;
+  font-size:1.6rem;cursor:pointer;
+}
+.wish-input {
+  width:100%; margin:20px 0 13px;
+  padding:13px; border:1px solid #719ed355;
+  border-radius:12px; background:#061329;
+  color:white; font:inherit;
+}
+.wish-result { min-height:25px; margin-top:15px; color:#a9d5ff!important; }
+.modal-symbol { font-size:3.5rem; color:#a9d5ff; text-shadow:0 0 30px #70baff; }
+
+/* FOOTER */
+footer {
+  border-top:1px solid #8bbfff1b;
+  text-align:center; padding:40px 20px;
+  color:#708ba9; font-size:.72rem;
+}
+footer span { color:#91c7ff; }
+
+/* RESPONSIVE */
+@media(max-width:850px) {
+  .feature-grid { grid-template-columns:repeat(2,1fr); }
+}
+@media(max-width:600px) {
+  nav { padding:20px 0; }
+  .menu-btn { display:block; }
+  .nav-links {
+    display:none; position:absolute; top:70px; right:0;
+    flex-direction:column; gap:18px;
+    padding:22px; border:1px solid #8bbfff33;
+    border-radius:17px; background:#08172df5;
+  }
+  .nav-links.open { display:flex; }
+  .feature-grid,.archive { grid-template-columns:1fr; }
+  section.content-section { margin:75px auto; }
+  .hero { min-height:78vh; }
+  .hero-orbit { width:260px;height:260px; }
+  .dog { width:82px; right:8px; bottom:12px; }
+  .dog-speech { right:12px;bottom:112px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation-duration:.01ms!important;scroll-behavior:auto!important; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<div class="sky"></div>
+<div class="sky-glow"></div>
+<div id="particles"></div>
+
+<div class="intro" id="intro">
+  <div class="intro-content">
+    <div class="intro-kicker">A LITTLE PLACE IN THE UNIVERSE</div>
+    <h1>welcome<span>.</span></h1>
+    <p>Your little universe is waiting.</p>
+    <button class="primary-btn" id="enterBtn">ENTER THE WORLD ✦</button>
+  </div>
+  <div class="intro-foot">MADE OF LITTLE MOMENTS & BIG MAGIC</div>
+</div>
+
+<div class="butterfly b1">🦋</div>
+<div class="butterfly b2">🦋</div>
+<div class="butterfly b3">🦋</div>
+
+<nav>
+  <div class="brand">✦ A LITTLE UNIVERSE</div>
+  <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#discover">Discover</a></li>
+    <li><a href="#birthdays">Birthdays</a></li>
+    <li><a href="#constellation">Stars</a></li>
+  </ul>
+</nav>
+
+<header class="hero" id="home">
+  <div class="hero-orbit"></div>
+  <div class="hero-moon"></div>
+  <div class="eyebrow">✦ A WORLD OF LITTLE WONDERS ✦</div>
+  <h1>Welcome to<br><em>your universe.</em></h1>
+  <p class="hero-desc">A little corner of the internet filled with memories, surprises, tiny details, and things worth keeping.</p>
+  <div class="hero-actions">
+    <a class="primary-btn" href="#discover" style="text-decoration:none">EXPLORE THE WORLD</a>
+    <button class="secondary-btn" id="wishOpen">MAKE A WISH ✧</button>
+  </div>
+  <div class="scroll-note">SCROLL TO DISCOVER ↓</div>
+</header>
+
+<section class="content-section" id="discover">
+  <div class="section-head">
+    <small>THE LITTLE UNIVERSE</small>
+    <h2>What would you like to explore?</h2>
+    <p>Every little corner has something different waiting.</p>
+  </div>
+  <div class="feature-grid">
+    <a href="#birthdays" class="feature-card">
+      <span class="card-icon">🎂</span><h3>Birthdays</h3>
+      <p>Little celebrations, one year at a time.</p><span class="card-arrow">↗</span>
+    </a>
+    <a href="#messages" class="feature-card">
+      <span class="card-icon">💌</span><h3>Messages</h3>
+      <p>Words, thoughts, and little notes.</p><span class="card-arrow">↗</span>
+    </a>
+    <button class="feature-card locked" data-locked style="text-align:left">
+      <span class="card-icon">🖼️</span><h3>Gallery</h3>
+      <p>A collection of moments, coming soon.</p><span class="lock-tag">🔒 LOCKED FOR NOW</span>
+    </button>
+    <button class="feature-card locked" data-locked style="text-align:left">
+      <span class="card-icon">✨</span><h3>AI Chat</h3>
+      <p>A little conversation corner, coming soon.</p><span class="lock-tag">🔒 LOCKED FOR NOW</span>
+    </button>
+  </div>
+</section>
+
+<section class="content-section" id="birthdays">
+  <div class="section-head">
+    <small>A COLLECTION OF CELEBRATIONS</small>
+    <h2>Birthday archive.</h2>
+    <p>Every year deserves its own little universe.</p>
+  </div>
+  <div class="archive">
+    <div class="year-card"><div class="year">2025</div><p>A memory from the past.</p><button onclick="openYear(2025)">OPEN YEAR ↗</button></div>
+    <div class="year-card"><div class="year">2026</div><p>This year's celebration.</p><button onclick="openYear(2026)">OPEN YEAR ↗</button></div>
+    <div class="year-card"><div class="year">2027</div><p>A new chapter waiting.</p><button onclick="openYear(2027)">OPEN YEAR ↗</button></div>
+  </div>
+</section>
+
+<section class="content-section" id="constellation">
+  <div class="section-head">
+    <small>A SKY FULL OF LITTLE THINGS</small>
+    <h2>Connect the stars.</h2>
+    <p>Tap a glowing star. Each one has a little message.</p>
+  </div>
+  <div class="constellation">
+    <svg viewBox="0 0 600 260" preserveAspectRatio="none">
+      <path d="M92 170 L190 78 L292 135 L390 58 L500 150 L430 215 L292 135"/>
+      <path d="M190 78 L230 215 L430 215"/>
+    </svg>
+    <button class="star-point" data-note="A little reminder: you make ordinary days special." aria-label="Star one"></button>
+    <button class="star-point" data-note="A tiny wish is still a wish. Keep yours close." aria-label="Star two"></button>
+    <button class="star-point" data-note="Some moments deserve their own place in the sky." aria-label="Star three"></button>
+    <button class="star-point" data-note="The best surprises are the ones you discover." aria-label="Star four"></button>
+    <button class="star-point" data-note="This little universe has more secrets waiting." aria-label="Star five"></button>
+    <button class="star-point" data-note="Never forget how much light you bring to a room." aria-label="Star six"></button>
+    <div class="constellation-message" id="starMessage">Choose a star ✦</div>
+  </div>
+</section>
+
+<section class="content-section" id="messages">
+  <div class="section-head">
+    <small>WORDS TO KEEP</small>
+    <h2>Little messages.</h2>
+    <p>Some things are worth saying, even in the smallest ways.</p>
+  </div>
+  <div class="feature-card" style="max-width:650px;margin:auto;text-align:center">
+    <span class="card-icon">💙</span>
+    <h3>A little note</h3>
+    <p>This space is waiting for the messages you want to add. Make it yours.</p>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="section-head">
+    <small>ONE LAST LITTLE THING</small>
+    <h2>There's always more magic.</h2>
+    <p>Look around. You might find something you didn't notice before.</p>
+  </div>
+  <div style="text-align:center">
+    <button class="primary-btn" id="moonOpen">OPEN THE MOON ☾</button>
+  </div>
+</section>
+
+<footer>
+  A little universe, made of little moments. <span>✦</span>
+</footer>
+
+<!-- MOON MEMORY MODAL -->
+<div class="modal" id="moonModal">
+  <div class="modal-box">
+    <button class="close-modal" data-close="moonModal">×</button>
+    <div class="modal-symbol">☾</div>
+    <div class="eyebrow">A NOTE FROM THE NIGHT SKY</div>
+    <h2>A place for a special memory.</h2>
+    <p>Some moments are too lovely to leave behind. This little moon is waiting for a memory to be added here.</p>
+  </div>
+</div>
+
+<!-- WISH MODAL -->
+<div class="modal" id="wishModal">
+  <div class="modal-box">
+    <button class="close-modal" data-close="wishModal">×</button>
+    <div class="modal-symbol">✧</div>
+    <div class="eyebrow">MAKE A LITTLE WISH</div>
+    <h2>The sky is listening.</h2>
+    <p>Think of something you'd love to happen. Keep it safe, then send it into the stars.</p>
+    <input class="wish-input" id="wishInput" maxlength="120" placeholder="Write your wish (optional)…">
+    <button class="primary-btn" id="sendWish">SEND MY WISH ✦</button>
+    <p class="wish-result" id="wishResult"></p>
+  </div>
+</div>
+
+<button class="dog" id="dogBtn" aria-label="Say hello to the puppy">
+  <svg viewBox="0 0 140 130" role="img" aria-label="Cute blue puppy">
+    <ellipse cx="70" cy="116" rx="39" ry="7" fill="#0004"/>
+    <path d="M37 45 Q15 24 18 64 Q20 88 46 78Z" fill="#4b8ed5" stroke="#a9d7ff" stroke-width="3"/>
+    <path d="M103 45 Q125 24 122 64 Q120 88 94 78Z" fill="#4b8ed5" stroke="#a9d7ff" stroke-width="3"/>
+    <path d="M35 54 Q31 26 70 25 Q109 26 105 54 L101 91 Q94 111 70 111 Q46 111 39 91Z" fill="#78baff" stroke="#c6e7ff" stroke-width="3"/>
+    <path d="M47 72 Q54 65 61 72 M79 72 Q86 65 93 72" fill="none" stroke="#17365d" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="70" cy="84" rx="8" ry="6" fill="#17365d"/>
+    <path d="M70 90 Q65 99 58 94 M70 90 Q75 99 82 94" fill="none" stroke="#17365d" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+</button>
+<div class="dog-speech" id="dogSpeech">woof! welcome ✨</div>
+
+<script>
+// STARFIELD
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+let stars = [];
+function resizeStars() {
+  canvas.width = window.innerWidth * devicePixelRatio;
+  canvas.height = window.innerHeight * devicePixelRatio;
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  stars = Array.from({length:Math.min(180,Math.floor(innerWidth/5))},()=>({
+    x:Math.random()*innerWidth,y:Math.random()*innerHeight,
+    r:Math.random()*1.4+.25,alpha:Math.random()*.7+.2,
+    speed:Math.random()*.012+.003
+  }));
+}
+function drawStars() {
+  ctx.clearRect(0,0,innerWidth,innerHeight);
+  stars.forEach(s=>{
+    s.alpha += s.speed;
+    if(s.alpha>.95||s.alpha<.15)s.speed*=-1;
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(190,220,255,${s.alpha})`;ctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+resizeStars();drawStars();
+window.addEventListener("resize",resizeStars);
+
+// FLOATING PARTICLES
+const particleArea=document.getElementById("particles");
+for(let i=0;i<24;i++){
+  const p=document.createElement("i");
+  p.className="particle";
+  p.style.left=Math.random()*100+"%";
+  p.style.top=Math.random()*100+"%";
+  p.style.width=p.style.height=(Math.random()*3+1)+"px";
+  p.style.animationDuration=(Math.random()*18+12)+"s";
+  p.style.animationDelay=(-Math.random()*25)+"s";
+  particleArea.appendChild(p);
+}
+
+// INTRO
+document.getElementById("enterBtn").addEventListener("click",()=>{
+  document.getElementById("intro").classList.add("hidden");
+});
+
+// MOBILE NAV
+document.getElementById("menuBtn").addEventListener("click",()=>{
+  document.getElementById("navLinks").classList.toggle("open");
+});
+document.querySelectorAll(".nav-links a").forEach(a=>{
+  a.addEventListener("click",()=>document.getElementById("navLinks").classList.remove("open"));
+});
+
+// MODALS
+function openModal(id){document.getElementById(id).classList.add("open");}
+function closeModal(id){document.getElementById(id).classList.remove("open");}
+document.getElementById("moonOpen").addEventListener("click",()=>openModal("moonModal"));
+document.getElementById("wishOpen").addEventListener("click",()=>openModal("wishModal"));
+document.querySelectorAll("[data-close]").forEach(b=>{
+  b.addEventListener("click",()=>closeModal(b.dataset.close));
+});
+document.querySelectorAll(".modal").forEach(m=>{
+  m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("open");});
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape")document.querySelectorAll(".modal").forEach(m=>m.classList.remove("open"));
+});
+
+// WISH
+document.getElementById("sendWish").addEventListener("click",()=>{
+  const field=document.getElementById("wishInput");
+  document.getElementById("wishResult").textContent=field.value.trim()
+    ?"Your wish has been sent into the stars. Keep it close. ✨"
+    :"A quiet wish has been sent. May something lovely find you. ✨";
+  field.value="";
+});
+
+// CONSTELLATION
+document.querySelectorAll(".star-point").forEach(star=>{
+  star.addEventListener("click",()=>{
+    document.getElementById("starMessage").textContent=star.dataset.note;
+  });
+});
+
+// LOCKED CARDS
+document.querySelectorAll("[data-locked]").forEach(card=>{
+  card.addEventListener("click",()=>alert("This little corner is still a secret. Come back later! ✨"));
+});
+
+// BIRTHDAY ARCHIVE — replace URLs with your real birthday websites.
+const birthdayLinks={
+  2025:"",
+  2026:"",
+  2027:""
+};
+function openYear(year){
+  if(birthdayLinks[year])window.open(birthdayLinks[year],"_blank","noopener");
+  else alert("The "+year+" birthday page hasn't been connected yet. 💙");
+}
+
+// PUPPY COMPANION
+const dogLines=["woof! welcome ✨","you found me! 🐾","let's explore the stars!","sending you a little happiness 💙","psst… there are secrets around here."];
+let dogIndex=0,dogTimer;
+document.getElementById("dogBtn").addEventListener("click",()=>{
+  const speech=document.getElementById("dogSpeech");
+  speech.textContent=dogLines[dogIndex++%dogLines.length];
+  speech.classList.add("show");
+  clearTimeout(dogTimer);
+  dogTimer=setTimeout(()=>speech.classList.remove("show"),3200);
+});
+</script>
+</body>
+</html>
