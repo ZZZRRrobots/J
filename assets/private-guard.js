@@ -5,7 +5,7 @@ const SESSION_KEY = "private_universe_session";
 const PERSON_KEY = "private_universe_person";
 const EXPIRY_KEY = "private_universe_expiry";
 
-const API_URL = `${SUPABASE_URL}/functions/v1/private-access`;
+const API_URL = `${SUPABASE_URL}/functions/v1/bright-handler`;
 
 async function privateRequest(action, token) {
   const response = await fetch(API_URL, {
