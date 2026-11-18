@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,265 +9,126 @@
 <script src="assets/private-guard.js"></script>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#050b19;
+  --panel:rgba(12,25,49,.78);
+  --blue:#66baff;
+  --text:#e8f3ff;
+  --muted:#8298b5;
 }
-
-:root {
-  --bg: #050b19;
-  --panel: rgba(12, 25, 49, .78);
-  --blue: #66baff;
-  --text: #e8f3ff;
-  --muted: #8298b5;
-}
-
-body {
-  min-height: 100vh;
+body{
+  min-height:100vh;
   background:
-    radial-gradient(ellipse at 15% 10%, #102c52 0%, transparent 40%),
-    radial-gradient(ellipse at 90% 90%, #102044 0%, transparent 40%),
+    radial-gradient(ellipse at 15% 10%,#102c52 0%,transparent 40%),
+    radial-gradient(ellipse at 90% 90%,#102044 0%,transparent 40%),
     var(--bg);
-  color: var(--text);
-  font-family: Inter, system-ui, sans-serif;
-  overflow: hidden;
+  color:var(--text);
+  font-family:Inter,system-ui,sans-serif;
+  overflow:hidden;
 }
-
-.stars {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: .4;
+.stars{
+  position:fixed;inset:0;pointer-events:none;opacity:.4;
   background-image:
-    radial-gradient(1px 1px at 20% 30%, white 99%, transparent),
-    radial-gradient(1px 1px at 70% 60%, white 99%, transparent),
-    radial-gradient(2px 2px at 40% 80%, #8ccaff 99%, transparent),
-    radial-gradient(1px 1px at 90% 15%, white 99%, transparent);
-  background-size: 230px 230px;
+    radial-gradient(1px 1px at 20% 30%,white 99%,transparent),
+    radial-gradient(1px 1px at 70% 60%,white 99%,transparent),
+    radial-gradient(2px 2px at 40% 80%,#8ccaff 99%,transparent),
+    radial-gradient(1px 1px at 90% 15%,white 99%,transparent);
+  background-size:230px 230px;
 }
-
-.app {
-  position: relative;
-  z-index: 1;
-  width: min(900px, 100%);
-  height: 100dvh;
-  margin: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+.app{
+  position:relative;z-index:1;width:min(900px,100%);
+  height:100dvh;margin:auto;padding:20px;
+  display:flex;flex-direction:column;
 }
-
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 4px 20px;
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 4px 20px;
 }
-
-.brand {
-  font-size: 13px;
-  letter-spacing: 3px;
-  color: var(--blue);
-  font-weight: 700;
+.brand{font-size:13px;letter-spacing:3px;color:var(--blue);font-weight:700}
+.back{color:var(--muted);text-decoration:none;font-size:13px}
+.chat{
+  flex:1;min-height:0;display:flex;flex-direction:column;
+  overflow:hidden;background:var(--panel);
+  border:1px solid rgba(112,183,255,.19);
+  border-radius:25px;backdrop-filter:blur(20px);
+  box-shadow:0 20px 80px rgba(0,0,0,.3);
 }
-
-.back {
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 13px;
+.chat-header{
+  padding:22px;border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:14px;
 }
-
-.chat {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--panel);
-  border: 1px solid rgba(112, 183, 255, .19);
-  border-radius: 25px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 20px 80px rgba(0,0,0,.3);
+.avatar{
+  width:43px;height:43px;display:grid;place-items:center;
+  border-radius:50%;background:linear-gradient(135deg,#24558a,#79c7ff);
+  color:white;font-size:19px;box-shadow:0 0 25px rgba(90,170,255,.2);
 }
-
-.chat-header {
-  padding: 22px;
-  border-bottom: 1px solid rgba(255,255,255,.07);
-  display: flex;
-  align-items: center;
-  gap: 14px;
+.header-info h2{font-size:16px;font-weight:600}
+.header-info p{font-size:11px;color:var(--muted);margin-top:4px}
+.online{
+  width:7px;height:7px;display:inline-block;background:#72dba8;
+  border-radius:50%;margin-right:5px;
 }
-
-.avatar {
-  width: 43px;
-  height: 43px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: linear-gradient(135deg,#24558a,#79c7ff);
-  color: white;
-  font-size: 19px;
-  box-shadow: 0 0 25px rgba(90,170,255,.2);
+.messages{
+  flex:1;min-height:0;overflow-y:auto;padding:24px 20px;
+  display:flex;flex-direction:column;gap:15px;
+  scroll-behavior:smooth;
 }
-
-.header-info h2 {
-  font-size: 16px;
-  font-weight: 600;
+.empty{
+  margin:auto;text-align:center;color:var(--muted);
+  line-height:1.8;font-size:13px;
 }
-
-.header-info p {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 4px;
+.empty .symbol{display:block;font-size:34px;margin-bottom:12px}
+.message-row{
+  display:flex;flex-direction:column;max-width:78%;
+  align-self:flex-start;
 }
-
-.online {
-  width: 7px;
-  height: 7px;
-  display: inline-block;
-  background: #72dba8;
-  border-radius: 50%;
-  margin-right: 5px;
+.message-row.mine{align-self:flex-end;align-items:flex-end}
+.sender{font-size:10px;color:var(--muted);margin:0 8px 5px}
+.bubble{
+  padding:12px 16px;border-radius:17px 17px 17px 5px;
+  background:rgba(36,62,96,.75);
+  border:1px solid rgba(135,190,255,.12);
+  color:#edf6ff;font-size:14px;line-height:1.6;
+  overflow-wrap:anywhere;white-space:pre-wrap;
 }
-
-.messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  scroll-behavior: smooth;
+.mine .bubble{
+  background:linear-gradient(135deg,#1e65a4,#28558b);
+  border-color:rgba(125,195,255,.25);
+  border-radius:17px 17px 5px 17px;
 }
-
-.empty {
-  margin: auto;
-  text-align: center;
-  color: var(--muted);
-  line-height: 1.8;
-  font-size: 13px;
+.time{font-size:9px;color:#7187a5;margin:5px 8px 0}
+.composer{
+  padding:17px;border-top:1px solid rgba(255,255,255,.07);
+  display:flex;gap:10px;align-items:flex-end;
 }
-
-.empty .symbol {
-  display: block;
-  font-size: 34px;
-  margin-bottom: 12px;
+#messageInput{
+  flex:1;min-width:0;resize:none;max-height:120px;
+  border:1px solid rgba(120,180,255,.2);border-radius:15px;
+  padding:13px 15px;background:rgba(2,10,25,.55);
+  color:white;outline:none;font:inherit;font-size:14px;
 }
-
-.message-row {
-  display: flex;
-  flex-direction: column;
-  max-width: 78%;
-  align-self: flex-start;
+#messageInput:focus{border-color:var(--blue)}
+#messageInput::placeholder{color:#7186a2}
+#sendButton{
+  width:48px;height:46px;flex-shrink:0;border:none;
+  border-radius:14px;background:linear-gradient(135deg,#57b6ff,#3178c3);
+  color:white;font-size:19px;cursor:pointer;transition:.2s;
 }
-
-.message-row.mine {
-  align-self: flex-end;
-  align-items: flex-end;
+#sendButton:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(65,160,255,.3)}
+#sendButton:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.status{
+  padding:0 20px 12px;min-height:25px;text-align:center;
+  font-size:11px;color:var(--muted);
 }
-
-.sender {
-  font-size: 10px;
-  color: var(--muted);
-  margin: 0 8px 5px;
-}
-
-.bubble {
-  padding: 12px 16px;
-  border-radius: 17px 17px 17px 5px;
-  background: rgba(36, 62, 96, .75);
-  border: 1px solid rgba(135,190,255,.12);
-  color: #edf6ff;
-  font-size: 14px;
-  line-height: 1.6;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-}
-
-.mine .bubble {
-  background: linear-gradient(135deg,#1e65a4,#28558b);
-  border-color: rgba(125,195,255,.25);
-  border-radius: 17px 17px 5px 17px;
-}
-
-.time {
-  font-size: 9px;
-  color: #7187a5;
-  margin: 5px 8px 0;
-}
-
-.composer {
-  padding: 17px;
-  border-top: 1px solid rgba(255,255,255,.07);
-  display: flex;
-  gap: 10px;
-  align-items: flex-end;
-}
-
-#messageInput {
-  flex: 1;
-  min-width: 0;
-  resize: none;
-  max-height: 120px;
-  border: 1px solid rgba(120,180,255,.2);
-  border-radius: 15px;
-  padding: 13px 15px;
-  background: rgba(2,10,25,.55);
-  color: white;
-  outline: none;
-  font: inherit;
-  font-size: 14px;
-}
-
-#messageInput:focus {
-  border-color: var(--blue);
-}
-
-#messageInput::placeholder {
-  color: #7186a2;
-}
-
-#sendButton {
-  width: 48px;
-  height: 46px;
-  flex-shrink: 0;
-  border: none;
-  border-radius: 14px;
-  background: linear-gradient(135deg,#57b6ff,#3178c3);
-  color: white;
-  font-size: 19px;
-  cursor: pointer;
-  transition: .2s;
-}
-
-#sendButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(65,160,255,.3);
-}
-
-#sendButton:disabled {
-  opacity: .5;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.status {
-  padding: 0 20px 12px;
-  min-height: 25px;
-  text-align: center;
-  font-size: 11px;
-  color: var(--muted);
-}
-
-@media(max-width:600px) {
-  .app { padding: 10px; }
-  .topbar { padding: 10px 5px 15px; }
-  .chat { border-radius: 19px; }
-  .chat-header { padding: 17px; }
-  .messages { padding: 18px 13px; }
-  .message-row { max-width: 88%; }
-  .composer { padding: 12px; }
+@media(max-width:600px){
+  .app{padding:10px}
+  .topbar{padding:10px 5px 15px}
+  .chat{border-radius:19px}
+  .chat-header{padding:17px}
+  .messages{padding:18px 13px}
+  .message-row{max-width:88%}
+  .composer{padding:12px}
 }
 </style>
 </head>
@@ -277,17 +137,14 @@ body {
 <div class="stars"></div>
 
 <main class="app">
-
   <header class="topbar">
     <div class="brand">✦ PRIVATE UNIVERSE</div>
     <a class="back" href="index.html">← Home</a>
   </header>
 
   <section class="chat">
-
     <header class="chat-header">
       <div class="avatar">✦</div>
-
       <div class="header-info">
         <h2>Our Messages</h2>
         <p><span class="online"></span>Private conversation</p>
@@ -304,26 +161,17 @@ body {
     <div class="status" id="status">Connecting...</div>
 
     <form class="composer" id="messageForm">
-      <textarea
-        id="messageInput"
-        placeholder="Write something..."
-        rows="1"
-        maxlength="2000"
-        required
-      ></textarea>
-
+      <textarea id="messageInput" placeholder="Write something..."
+        rows="1" maxlength="2000" required></textarea>
       <button id="sendButton" type="submit">➤</button>
     </form>
-
   </section>
 </main>
 
 <script>
 const SUPABASE_URL = "https://xevucdvjsezroxdqdjtz.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_OmnPPdFOmkn2PTinT_xxuA_kz_WtySy";
-
-const API_URL =
-  `${SUPABASE_URL}/functions/v1/bright-handler`;
+const API_URL = `${SUPABASE_URL}/functions/v1/bright-handler`;
 
 const SESSION_KEY = "private_universe_session";
 
@@ -336,12 +184,17 @@ const statusText = document.getElementById("status");
 let currentPerson = null;
 let lastMessageId = null;
 let isSending = false;
+let isLoading = false;
+let refreshTimer = null;
 
 async function api(action, extra = {}) {
   const token = localStorage.getItem(SESSION_KEY);
 
+  console.log("Chat session exists:", !!token);
+  console.log("Chat action:", action);
+
   if (!token) {
-    throw new Error("Your session has expired.");
+    throw new Error("No login session found. Please log in again.");
   }
 
   const response = await fetch(API_URL, {
@@ -350,25 +203,31 @@ async function api(action, extra = {}) {
       "Content-Type": "application/json",
       "apikey": SUPABASE_ANON_KEY
     },
-    body: JSON.stringify({
-      action,
-      token,
-      ...extra
-    })
+    body: JSON.stringify({ action, token, ...extra })
   });
 
-  const data = await response.json();
+  const raw = await response.text();
+  let data;
+
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    console.error("Invalid server response:", raw);
+    throw new Error("The server returned an invalid response.");
+  }
+
+  console.log("Chat response:", response.status, data);
 
   if (response.status === 401) {
     localStorage.removeItem(SESSION_KEY);
     localStorage.removeItem("private_universe_person");
     localStorage.removeItem("private_universe_expiry");
     location.replace("Login.html");
-    throw new Error("Please log in again.");
+    throw new Error("Session expired. Please log in again.");
   }
 
   if (!response.ok) {
-    throw new Error(data.error || "Something went wrong.");
+    throw new Error(data.error || `Server error (${response.status}).`);
   }
 
   return data;
@@ -376,6 +235,8 @@ async function api(action, extra = {}) {
 
 function formatTime(dateString) {
   const date = new Date(dateString);
+
+  if (Number.isNaN(date.getTime())) return "";
 
   return date.toLocaleString([], {
     day: "numeric",
@@ -404,57 +265,67 @@ function createMessage(message) {
   time.textContent = formatTime(message.created_at);
 
   row.append(sender, bubble, time);
-
   return row;
 }
 
 async function loadMessages() {
-  const data = await api("list_messages");
+  if (isLoading) return;
+  isLoading = true;
 
-  if (!data.success) return;
+  try {
+    const data = await api("list_messages");
 
-  const list = data.messages || [];
-  const newLastId = list.length
-    ? list[list.length - 1].id
-    : null;
+    if (!data.success || !Array.isArray(data.messages)) {
+      throw new Error("Unexpected messages response.");
+    }
 
-  if (newLastId === lastMessageId && list.length === messagesBox.querySelectorAll(".message-row").length) {
-    return;
+    const list = data.messages;
+    const newLastId = list.length ? list[list.length - 1].id : null;
+    const existingCount = messagesBox.querySelectorAll(".message-row").length;
+
+    if (newLastId === lastMessageId && list.length === existingCount) {
+      return;
+    }
+
+    const wasNearBottom =
+      messagesBox.scrollHeight -
+      messagesBox.scrollTop -
+      messagesBox.clientHeight < 100;
+
+    const fragment = document.createDocumentFragment();
+
+    if (!list.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+
+      const symbol = document.createElement("span");
+      symbol.className = "symbol";
+      symbol.textContent = "✧";
+
+      const text = document.createElement("div");
+      text.textContent = "Your conversation starts here. Send the first message.";
+
+      empty.append(symbol, text);
+      fragment.appendChild(empty);
+    } else {
+      list.forEach(message => fragment.appendChild(createMessage(message)));
+    }
+
+    messagesBox.replaceChildren(fragment);
+    lastMessageId = newLastId;
+
+    if (wasNearBottom || list.length <= 1) {
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+    }
+
+    statusText.textContent = "Your private conversation ✦";
+
+  } catch (error) {
+    console.error("Load messages failed:", error);
+    statusText.textContent = "Couldn't load messages: " + error.message;
+  } finally {
+    isLoading = false;
   }
-
-  const wasNearBottom =
-    messagesBox.scrollHeight -
-    messagesBox.scrollTop -
-    messagesBox.clientHeight < 100;
-
-  messagesBox.replaceChildren();
-
-  if (!list.length) {
-    const empty = document.createElement("div");
-    empty.className = "empty";
-
-    const symbol = document.createElement("span");
-    symbol.className = "symbol";
-    symbol.textContent = "✧";
-
-    const text = document.createElement("div");
-    text.textContent = "Your conversation starts here. Send the first message.";
-
-    empty.append(symbol, text);
-    messagesBox.appendChild(empty);
-  } else {
-    list.forEach(message => {
-      messagesBox.appendChild(createMessage(message));
-    });
-  }
-
-  lastMessageId = newLastId;
-
-  if (wasNearBottom || list.length <= 1) {
-    messagesBox.scrollTop = messagesBox.scrollHeight;
-  }
-
-  statusText.textContent = "Your private conversation";
 }
 
 async function sendMessage(event) {
@@ -469,17 +340,23 @@ async function sendMessage(event) {
   statusText.textContent = "Sending...";
 
   try {
-    await api("send_message", { message });
+    const result = await api("send_message", { message });
+
+    if (!result.success) {
+      throw new Error("The server did not confirm the message.");
+    }
 
     input.value = "";
     input.style.height = "auto";
 
+    lastMessageId = null;
     await loadMessages();
 
     statusText.textContent = "Message sent ✦";
 
   } catch (error) {
-    statusText.textContent = error.message;
+    console.error("Send message failed:", error);
+    statusText.textContent = "Couldn't send: " + error.message;
   } finally {
     isSending = false;
     sendButton.disabled = false;
@@ -489,8 +366,7 @@ async function sendMessage(event) {
 
 input.addEventListener("input", () => {
   input.style.height = "auto";
-  input.style.height =
-    Math.min(input.scrollHeight, 120) + "px";
+  input.style.height = Math.min(input.scrollHeight, 120) + "px";
 });
 
 input.addEventListener("keydown", event => {
@@ -504,28 +380,33 @@ form.addEventListener("submit", sendMessage);
 
 async function startChat() {
   try {
+    statusText.textContent = "Checking your session...";
+
     const verified = await api("verify");
+
+    if (!verified.success || !verified.person) {
+      throw new Error("Could not verify your account.");
+    }
 
     currentPerson = verified.person;
 
+    statusText.textContent = "Loading conversation...";
+
     await loadMessages();
 
-    // Refresh conversation every 3 seconds.
-    setInterval(async () => {
-      try {
-        await loadMessages();
-      } catch (error) {
-        console.error(error);
-      }
-    }, 3000);
+    if (refreshTimer) clearInterval(refreshTimer);
+
+    refreshTimer = setInterval(() => {
+      loadMessages();
+    }, 5000);
 
   } catch (error) {
-    statusText.textContent = error.message;
+    console.error("Chat startup failed:", error);
+    statusText.textContent = "Connection failed: " + error.message;
   }
 }
 
 startChat();
 </script>
-
 </body>
 </html>
