@@ -1,21 +1,22 @@
-document.getElementById("status").textContent =
-  "MESSAGES.JS IS RUNNING!";
 
 "use strict";
 
-const SUPABASE_URL = "https://xevucdvjsezroxdqdjtz.supabase.co";
+/* =====================================
+   PRIVATE UNIVERSE — MESSAGES
+===================================== */
 
-const SUPABASE_ANON_KEY = "sb_publishable_OmnPPdFOmkn2PTinT_xxuA_kz_WtySy";
+const SUPABASE_URL =
+  "https://xevucdvjsezroxdqdjtz.supabase.co";
 
-const API_URL = `${SUPABASE_URL}/functions/v1/bright-handler`;
+const SUPABASE_ANON_KEY =
+  "YOUR_EXISTING_PUBLISHABLE_KEY";
+
+const API_URL =
+  `${SUPABASE_URL}/functions/v1/bright-handler`;
 
 const SESSION_KEY = "private_universe_session";
-
-const messagesBox = document.getElementById("messages");
-const input = document.getElementById("messageInput");
-const form = document.getElementById("messageForm");
-const sendButton = document.getElementById("sendButton");
-const statusText = document.getElementById("status");
+const PERSON_KEY = "private_universe_person";
+const EXPIRY_KEY = "private_universe_expiry";
 
 let currentPerson = null;
 let lastMessageId = null;
@@ -24,17 +25,47 @@ let isLoading = false;
 let refreshTimer = null;
 let hasLoadedMessages = false;
 
+/* =====================================
+   ELEMENTS
+===================================== */
 
-// STATUS
+let messagesBox;
+let input;
+let form;
+let sendButton;
+let statusText;
+
+/* =====================================
+   STATUS
+===================================== */
 
 function setStatus(message) {
-  statusText.textContent = message;
+  if (statusText) {
+    statusText.textContent = message;
+  }
 }
 
+/* =====================================
+   SESSION CLEANUP
+===================================== */
 
-// EMPTY / ERROR DISPLAY
+function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem(PERSON_KEY);
+  localStorage.removeItem(EXPIRY_KEY);
+}
+
+function redirectToLogin() {
+  location.replace("Login.html");
+}
+
+/* =====================================
+   PLACEHOLDER
+===================================== */
 
 function showPlaceholder(message) {
+  if (!messagesBox) return;
+
   const empty = document.createElement("div");
   empty.className = "empty";
 
@@ -46,47 +77,41 @@ function showPlaceholder(message) {
   text.textContent = message;
 
   empty.append(symbol, text);
-
   messagesBox.replaceChildren(empty);
 }
 
-
-// API REQUEST
+/* =====================================
+   API REQUEST
+===================================== */
 
 async function api(action, extra = {}) {
-
   const token = localStorage.getItem(SESSION_KEY);
 
   if (!token) {
-    throw new Error("Login session missing. Please log in again.");
+    throw new Error(
+      "Your login session is missing. Please log in again."
+    );
   }
 
   let response;
 
   try {
-
     response = await fetch(API_URL, {
       method: "POST",
-
       headers: {
         "Content-Type": "application/json",
         "apikey": SUPABASE_ANON_KEY
       },
-
       body: JSON.stringify({
         action,
         token,
         ...extra
       })
-
     });
-
   } catch (error) {
-
     throw new Error(
       "Network connection failed. Check your internet connection."
     );
-
   }
 
   const raw = await response.text();
@@ -94,45 +119,36 @@ async function api(action, extra = {}) {
   let data;
 
   try {
-
     data = JSON.parse(raw);
-
   } catch {
-
     throw new Error(
-      "Invalid response from the server."
+      "The server returned an invalid response."
     );
-
   }
 
   if (response.status === 401) {
+    clearSession();
+    redirectToLogin();
 
-    localStorage.removeItem("private_universe_session");
-    localStorage.removeItem("private_universe_person");
-    localStorage.removeItem("private_universe_expiry");
-
-    location.replace("Login.html");
-
-    throw new Error("Session expired. Please log in again.");
-
+    throw new Error(
+      "Your session expired. Please log in again."
+    );
   }
 
   if (!response.ok) {
-
     throw new Error(
       data.error || `Server error (${response.status}).`
     );
-
   }
 
   return data;
 }
 
-
-// MESSAGE TIME
+/* =====================================
+   TIME FORMAT
+===================================== */
 
 function formatTime(dateString) {
-
   const date = new Date(dateString);
 
   if (Number.isNaN(date.getTime())) {
@@ -145,70 +161,56 @@ function formatTime(dateString) {
     hour: "2-digit",
     minute: "2-digit"
   });
-
 }
 
-
-// CREATE MESSAGE
+/* =====================================
+   CREATE MESSAGE ELEMENT
+===================================== */
 
 function createMessage(message) {
-
   const mine = message.sender === currentPerson;
 
   const row = document.createElement("div");
 
-  row.className = "message-row" + (
-    mine ? " mine" : ""
-  );
+  row.className =
+    "message-row" + (mine ? " mine" : "");
 
   const sender = document.createElement("div");
-
   sender.className = "sender";
-
-  sender.textContent = mine
-    ? "You"
-    : "Jaidaa";
+  sender.textContent = mine ? "You" : "Jaidaa";
 
   const bubble = document.createElement("div");
-
   bubble.className = "bubble";
-
   bubble.textContent = message.body;
 
   const time = document.createElement("div");
-
   time.className = "time";
-
   time.textContent = formatTime(message.created_at);
 
   row.append(sender, bubble, time);
 
   return row;
-
 }
 
-
-// LOAD MESSAGES
+/* =====================================
+   LOAD MESSAGES
+===================================== */
 
 async function loadMessages() {
-
   if (isLoading) return;
 
   isLoading = true;
 
   try {
-
     const data = await api("list_messages");
 
     if (
       !data.success ||
       !Array.isArray(data.messages)
     ) {
-
       throw new Error(
         "Unexpected response from the messages server."
       );
-
     }
 
     const list = data.messages;
@@ -225,9 +227,7 @@ async function loadMessages() {
       newLastId === lastMessageId &&
       list.length === existingCount
     ) {
-
       return;
-
     }
 
     const wasNearBottom =
@@ -235,57 +235,42 @@ async function loadMessages() {
       messagesBox.scrollTop -
       messagesBox.clientHeight < 100;
 
-    const fragment = document.createDocumentFragment();
+    const fragment =
+      document.createDocumentFragment();
 
     if (list.length === 0) {
-
       const empty = document.createElement("div");
-
       empty.className = "empty";
 
       const symbol = document.createElement("span");
-
       symbol.className = "symbol";
       symbol.textContent = "✧";
 
       const text = document.createElement("div");
-
       text.textContent =
         "Your conversation starts here. Send the first message.";
 
       empty.append(symbol, text);
-
       fragment.appendChild(empty);
-
     } else {
-
       list.forEach(message => {
-
-        fragment.appendChild(
-          createMessage(message)
-        );
-
+        fragment.appendChild(createMessage(message));
       });
-
     }
 
     messagesBox.replaceChildren(fragment);
 
     lastMessageId = newLastId;
-
     hasLoadedMessages = true;
 
     if (wasNearBottom || list.length <= 1) {
-
       messagesBox.scrollTop =
         messagesBox.scrollHeight;
-
     }
 
     setStatus("Your private conversation ✦");
 
   } catch (error) {
-
     console.error("Load messages error:", error);
 
     setStatus(
@@ -293,26 +278,21 @@ async function loadMessages() {
     );
 
     if (!hasLoadedMessages) {
-
       showPlaceholder(
         "Unable to load your conversation. Please try again."
       );
-
     }
 
   } finally {
-
     isLoading = false;
-
   }
-
 }
 
-
-// SEND MESSAGE
+/* =====================================
+   SEND MESSAGE
+===================================== */
 
 async function sendMessage(event) {
-
   event.preventDefault();
 
   const message = input.value.trim();
@@ -320,28 +300,24 @@ async function sendMessage(event) {
   if (!message || isSending) return;
 
   isSending = true;
-
   sendButton.disabled = true;
 
   setStatus("Sending your message...");
 
   try {
-
     const result = await api(
       "send_message",
       { message }
     );
 
     if (!result.success) {
-
       throw new Error(
-        result.error || "The server did not confirm your message."
+        result.error ||
+        "The server did not confirm your message."
       );
-
     }
 
     input.value = "";
-
     input.style.height = "auto";
 
     lastMessageId = null;
@@ -351,7 +327,6 @@ async function sendMessage(event) {
     setStatus("Message sent ✦");
 
   } catch (error) {
-
     console.error("Send message error:", error);
 
     setStatus(
@@ -359,62 +334,48 @@ async function sendMessage(event) {
     );
 
   } finally {
-
     isSending = false;
-
     sendButton.disabled = false;
-
     input.focus();
-
   }
-
 }
 
+/* =====================================
+   INPUT EVENTS
+===================================== */
 
-// AUTO RESIZE
+function setupInput() {
+  input.addEventListener("input", () => {
+    input.style.height = "auto";
 
-input.addEventListener("input", () => {
+    input.style.height =
+      Math.min(input.scrollHeight, 120) + "px";
+  });
 
-  input.style.height = "auto";
+  input.addEventListener("keydown", event => {
+    if (
+      event.key === "Enter" &&
+      !event.shiftKey
+    ) {
+      event.preventDefault();
+      form.requestSubmit();
+    }
+  });
 
-  input.style.height =
-    Math.min(input.scrollHeight, 120) + "px";
+  form.addEventListener("submit", sendMessage);
+}
 
-});
-
-
-// ENTER TO SEND
-
-input.addEventListener("keydown", event => {
-
-  if (
-    event.key === "Enter" &&
-    !event.shiftKey
-  ) {
-
-    event.preventDefault();
-
-    form.requestSubmit();
-
-  }
-
-});
-
-
-// FORM EVENT
-
-form.addEventListener("submit", sendMessage);
-
-
-// START CHAT
+/* =====================================
+   START CHAT
+===================================== */
 
 async function startChat() {
-
   try {
-
     setStatus("Checking your session...");
 
-    showPlaceholder("Connecting to your private universe...");
+    showPlaceholder(
+      "Connecting to your private universe..."
+    );
 
     const verified = await api("verify");
 
@@ -422,17 +383,15 @@ async function startChat() {
       !verified.success ||
       !verified.person
     ) {
-
       throw new Error(
         "Could not verify your account."
       );
-
     }
 
     currentPerson = verified.person;
 
     localStorage.setItem(
-      "private_universe_person",
+      PERSON_KEY,
       currentPerson
     );
 
@@ -441,19 +400,14 @@ async function startChat() {
     await loadMessages();
 
     if (refreshTimer) {
-
       clearInterval(refreshTimer);
-
     }
 
     refreshTimer = setInterval(() => {
-
       loadMessages();
-
     }, 5000);
 
   } catch (error) {
-
     console.error("Chat startup error:", error);
 
     setStatus(
@@ -463,12 +417,43 @@ async function startChat() {
     showPlaceholder(
       "We couldn't connect to your conversation."
     );
-
   }
-
 }
 
+/* =====================================
+   INITIALIZE
+===================================== */
 
-// START
+function initializeMessages() {
+  messagesBox = document.getElementById("messages");
+  input = document.getElementById("messageInput");
+  form = document.getElementById("messageForm");
+  sendButton = document.getElementById("sendButton");
+  statusText = document.getElementById("status");
 
-startChat();
+  if (
+    !messagesBox ||
+    !input ||
+    !form ||
+    !sendButton ||
+    !statusText
+  ) {
+    console.error(
+      "Messages initialization failed: HTML elements are missing."
+    );
+
+    return;
+  }
+
+  // Confirm that this file is executing.
+  setStatus("Messages script loaded. Connecting...");
+
+  setupInput();
+  startChat();
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  initializeMessages
+);
+  
